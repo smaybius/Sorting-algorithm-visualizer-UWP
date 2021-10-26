@@ -1,61 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
+using Windows.UI;
+using Windows.UI.Input;
+using Windows.UI.Popups;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+
+// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace Algo
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public partial class MainWindow : Window
+    public sealed partial class MainPage : Page
     {
         //bool for the pause button && extra functionallity
-        bool isPaused;
+        private bool isPaused;
 
         //current array of numbers (the one being shown)
-        int[] arr;
+        private int[] arr;
 
         //currently highlighted indexes
-        int[] selectedArr;
+        private int[] selectedArr;
 
         //all sorting steps (arrays of numbers)
-        List<int[]> sortHistory;
+        private List<int[]> sortHistory;
 
         //all highlighted indexes during the sorting steps
-        List<int[]> selectedHistory;
+        private List<int[]> selectedHistory;
 
         //timer that we'll use when drawing the array
-        DispatcherTimer timer;
+        private DispatcherTimer timer;
 
         //for custom arrays
-        bool isPremade;
+        private bool isPremade;
 
         //how many comparisons were needed for the sort in total
-        long comparisons;
+        private long comparisons;
 
         //how many array accesses were needed for the sort
-        long arrAccesses;
-
-        public MainWindow()
+        private long arrAccesses;
+        public MainPage()
         {
             InitializeComponent();
-            arr = new int[(int)numslider.Value];
+            arr = new int[(int)ArraySize.Value];
+            for (int i = 0; i < arr.Length; i++)
+            {
+                arr[i] = i + 1;
+            }
+            Array.Sort(arr);
         }
 
+        private void ShuffleBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ShuffleArray();
+        }
 
-        void Visualize_Click(object sender, RoutedEventArgs e)
+        private void ShuffleArray()
+        {
+            //create a random starting array, if its not already premade
+            if (!isPremade)
+            {
+                if (timer != null) { timer.Stop(); }
+                isPaused = false;
+                selectedHistory = new List<int[]>();
+                sortHistory = new List<int[]>();
+                Random random = new();
+                arr = new int[(int)ArraySize.Value];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    arr[i] = i + 1;
+                }
+                switch (shufflecomboBox.SelectedIndex)
+                {
+                    case 0: //random
+                        for (int i = 0; i < arr.Length; i++)
+                        {
+                            int oldArrItem = arr[i];
+                            int switchIndex = random.Next(i, arr.Length);
+                            arr[i] = arr[switchIndex];
+                            arr[switchIndex] = oldArrItem;
+                            selectedArr = new int[] { i };
+                            AddHistorySnap();
+                        }
+                        break;
+                    case 1: //reversed
+                        Array.Reverse(arr);
+                        AddHistorySnap();
+                        break;
+                    case 2: //sorted
+                        Array.Sort(arr);
+                        AddHistorySnap();
+                        break;
+                    case 3: //reverse sorted
+                        Array.Sort(arr);
+                        Array.Reverse(arr);
+                        AddHistorySnap();
+                        break;
+                    case 4: //none
+                        break;
+                    case 5: //max heapified
+                        break;
+                    default: //none, option 4
+                        break;
+
+                }
+                DrawHistory();
+            }
+            isPremade = false;
+
+        }
+
+        private void Visualize_Click(object sender, RoutedEventArgs e)
         {
             //initialize everything
             if (timer != null) { timer.Stop(); }
@@ -65,25 +126,8 @@ namespace Algo
             selectedHistory = new List<int[]>();
             sortHistory = new List<int[]>();
             ResetPauseButtonText();
+            //ShuffleArray();
 
-            //create a random starting array, if its not already premade
-            if (!isPremade)
-            {
-                Random random = new Random();
-                arr = new int[(int)numslider.Value];
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    arr[i] = i + 1;
-                }
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    int oldArrItem = arr[i];
-                    int switchIndex = random.Next(i, arr.Length);
-                    arr[i] = arr[switchIndex];
-                    arr[switchIndex] = oldArrItem;
-                }
-            }
-            isPremade = false;
 
             switch (comboBox.SelectedIndex)
             {
@@ -112,29 +156,30 @@ namespace Algo
                     DrawHistory();
                     break;
                 default:
-                    MessageBox.Show("You need to select an algorithm.", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageDialog dialog = new("You need to select an algorithm.", "Alert");
+                    //dialog.ShowAsync();
                     break;
             }
 
             comparisonsTxt.Text = comparisons.ToString();
             arrayAccTxt.Text = arrAccesses.ToString();
-            numsTxt.Text = numslider.Value.ToString();
+            numsTxt.Text = ArraySize.Value.ToString();
 
         }
 
-        bool isLeftButtonDown;
-        private void canv_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private bool isLeftButtonDown;
+        private void Canv_MouseLeftButtonDown(object sender, PointerRoutedEventArgs e)
         {
-            isLeftButtonDown = true;            
+            isLeftButtonDown = true;
         }
 
-        private void canv_MouseMove(object sender, MouseEventArgs e)
+        private void Canv_MouseMove(object sender, PointerRoutedEventArgs e)
         {
-            if (isLeftButtonDown && isPaused && (e.GetPosition(canv).X > 0 && e.GetPosition(canv).X < canv.ActualWidth) && (e.GetPosition(canv).Y > 0 && e.GetPosition(canv).Y < canv.ActualHeight))
+            if (isLeftButtonDown && isPaused && e.GetCurrentPoint(canv).Position.X > 0 && e.GetCurrentPoint(canv).Position.X < canv.ActualWidth && e.GetCurrentPoint(canv).Position.Y > 0 && e.GetCurrentPoint(canv).Position.Y < canv.ActualHeight)
             {
                 isPremade = true;
-                Point a = Mouse.GetPosition(canv);
-                arr[(int)Math.Ceiling(a.X / (canv.ActualWidth / arr.Length)) - 1] = arr.Length - (int)Math.Ceiling(a.Y / (canv.ActualHeight / arr.Length));
+                PointerPoint a = e.GetCurrentPoint(canv);
+                arr[(int)Math.Ceiling(a.Position.X / (canv.ActualWidth / arr.Length)) - 1] = arr.Length - (int)Math.Ceiling(a.Position.Y / (canv.ActualHeight / arr.Length));
                 DrawNumbers(arr, null);
             }
             else
@@ -143,21 +188,23 @@ namespace Algo
             }
         }
 
-        private void window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Window_MouseLeftButtonUp(object sender, PointerRoutedEventArgs e)
         {
             isLeftButtonDown = false;
         }
 
-        private void pauseButton_Click(object sender, RoutedEventArgs e)
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             if (isPremade)
             {
-                MessageBox.Show("To visualize a premade array click \"Visualize\"", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialog dialog = new("To visualize a premade array click \"Visualize\"", "Alert");
+                //dialog.ShowAsync();
                 return;
             }
             if (timer == null)
             {
-                MessageBox.Show("There is no running preview.", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageDialog dialog = new("There is no running preview.", "Alert");
+                //dialog.ShowAsync();
                 return;
             }
             if (isPaused)
@@ -172,7 +219,7 @@ namespace Algo
 
         private void PausePreview()
         {
-            if(timer != null)
+            if (timer != null)
             {
                 timer.Stop();
             }
@@ -188,7 +235,7 @@ namespace Algo
             }
             pauseButton.Content = "Pause";
             isPaused = false;
-        }   
+        }
 
         private void ResetPauseButtonText()
         {
@@ -198,10 +245,12 @@ namespace Algo
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (arr != null)
+            {
                 DrawNumbers(arr, selectedArr);
+            }
         }
 
-        void AddHistorySnap()
+        private void AddHistorySnap()
         {
             int[] historySnap = new int[arr.Length];
             arr.CopyTo(historySnap, 0);
@@ -209,36 +258,32 @@ namespace Algo
             selectedHistory.Add(selectedArr);
         }
 
-        void DrawNumbers(int[] arr, int[] selectedHistory)
+        private void DrawNumbers(int[] arr, int[] selectedHistory)
         {
             canv.Children.Clear();
 
-            int howMany = (int)arr.Length;
+            int howMany = arr.Length;
             double size = canv.ActualWidth / howMany;
 
             for (int i = 0; i < howMany; i++)
             {
-                Rectangle rect = new Rectangle();
+                Rectangle rect = new();
                 Canvas.SetLeft(rect, size * i);
-                Canvas.SetBottom(rect, 0);
+                Canvas.SetTop(rect, 0);
                 rect.Width = size;
                 rect.Height = (canv.ActualHeight - 5) / howMany * arr[i];
-                if (selectedHistory != null && selectedHistory.Contains(i))
-                {
-                    rect.Fill = new SolidColorBrush(Colors.Red);
-                }
-                else
-                {
-                    rect.Fill = new SolidColorBrush(Colors.Black);
-                }
+                rect.Fill = selectedHistory != null && selectedHistory.Contains(i) ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
                 canv.Children.Add(rect);
             }
         }
-        void DrawHistory()
+
+        private void DrawHistory()
         {
             int counter = 0;
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(speedSlider.Value);
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(speedSlider.Value)
+            };
             timer.Tick += (sender, e) =>
             {
                 timer.Stop();
@@ -261,7 +306,7 @@ namespace Algo
             timer.Start();
         }
 
-        int[] MergeSort(int startI, int endI)
+        private int[] MergeSort(int startI, int endI)
         {
             int length = endI - startI;
             if (length == 1)
@@ -309,7 +354,7 @@ namespace Algo
             return AB;
         }
 
-        void InsertionSort()
+        private void InsertionSort()
         {
             for (int i = 1; i < arr.Length; i++)
             {
@@ -336,11 +381,13 @@ namespace Algo
             }
         }
 
-        void QuickSort(int startI, int endI)
+        private void QuickSort(int startI, int endI)
         {
             comparisons++;
             if (endI - startI < 1)
+            {
                 return;
+            }
 
             int pI = endI - 1;
 
@@ -379,7 +426,7 @@ namespace Algo
             QuickSort(pI + 1, endI);
         }
 
-        void BubbleSort()
+        private void BubbleSort()
         {
             for (int i = arr.Length; i >= 0; i--)
             {
@@ -401,7 +448,7 @@ namespace Algo
             }
         }
 
-        void SelectionSort()
+        private void SelectionSort()
         {
             for (int i = 0; i < arr.Length; i++)
             {
@@ -425,7 +472,7 @@ namespace Algo
             }
         }
 
-        void HeapSort()
+        private void HeapSort()
         {
 
             for (int i = arr.Length / 2 - 1; i >= 0; i--)
@@ -458,7 +505,9 @@ namespace Algo
                     arrAccesses += 2;
                     comparisons++;
                     if (arr[leftChildI] > arr[maxI])
+                    {
                         maxI = leftChildI;
+                    }
                 }
 
                 comparisons++;
@@ -467,7 +516,9 @@ namespace Algo
                     arrAccesses += 2;
                     comparisons++;
                     if (arr[rightChildI] > arr[maxI])
+                    {
                         maxI = rightChildI;
+                    }
                 }
 
                 comparisons++;
@@ -485,7 +536,5 @@ namespace Algo
                 }
             }
         }
-
-        
     }
 }
