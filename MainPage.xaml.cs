@@ -40,10 +40,10 @@ namespace Algo
         private bool isPaused;
 
         //current array of numbers (the one being shown)
-        private int[] arr;
+        public int[] arr;
 
         //currently highlighted indexes
-        private int[] selectedArr;
+        public int[] selectedArr;
 
         //all sorting steps (arrays of numbers)
         private List<int[]> sortHistory;
@@ -58,10 +58,10 @@ namespace Algo
         private bool isPremade;
 
         //how many comparisons were needed for the sort in total
-        private long comparisons;
+        public long comparisons;
 
         //how many array accesses were needed for the sort
-        private long arrAccesses;
+        public long arrAccesses;
 
         //Audio variables
         private AudioGraph graph;
@@ -72,12 +72,18 @@ namespace Algo
         public MainPage()
         {
             InitializeComponent();
+            if (timer != null) { timer.Stop(); }
+            isPaused = false;
+            selectedHistory = new List<int[]>();
+            sortHistory = new List<int[]>();
             arr = new int[(int)ArraySize.Value];
             for (int i = 0; i < arr.Length; i++)
             {
                 arr[i] = i + 1;
             }
             Array.Sort(arr);
+            AddHistorySnap();
+            DrawHistory();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -236,6 +242,10 @@ namespace Algo
                     HeapSort();
                     DrawHistory();
                     break;
+                case 6:
+                    OddEvenSort(arr, arr.Length); //first custom sort, also the first to not be hardcoded to the program's system.
+                    DrawHistory();
+                    break;
                 default:
                     MessageDialog dialog = new("You need to select an algorithm.", "Alert");
                     //dialog.ShowAsync();
@@ -331,7 +341,7 @@ namespace Algo
             }
         }
 
-        private void AddHistorySnap()
+        public void AddHistorySnap()
         {
             int[] historySnap = new int[arr.Length];
             arr.CopyTo(historySnap, 0);
@@ -361,10 +371,7 @@ namespace Algo
         private void DrawHistory()
         {
             int counter = 0;
-            timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(speedSlider.Value)
-            };
+            timer = new DispatcherTimer();
             timer.Tick += (sender, e) =>
             {
                 timer.Stop();
@@ -387,7 +394,7 @@ namespace Algo
             timer.Start();
         }
 
-        private int[] MergeSort(int startI, int endI)
+        public int[] MergeSort(int startI, int endI)
         {
             int length = endI - startI;
             if (length == 1)
@@ -617,6 +624,46 @@ namespace Algo
                 }
             }
         }
+
+        public void OddEvenSort(int[] array, int length)
+        {
+            bool isSorted = false;
+
+            while (!isSorted)
+            {
+                isSorted = true;
+
+                //Swap i and i+1 if they are out of order, for i == odd numbers
+                for (int i = 1; i <= length - 2; i += 2)
+                {
+                    if (array[i] > array[i + 1])
+                    {
+                        int temp = array[i];
+                        array[i] = array[i + 1];
+                        array[i + 1] = temp;
+                        isSorted = false;
+                    }
+                    selectedArr = new int[] { i };
+                    AddHistorySnap();
+                }
+
+                //Swap i and i+1 if they are out of order, for i == even numbers
+                for (int i = 0; i <= length - 2; i += 2)
+                {
+                    if (array[i] > array[i + 1])
+                    {
+                        int temp = array[i];
+                        array[i] = array[i + 1];
+                        array[i + 1] = temp;
+                        isSorted = false;
+                    }
+                    selectedArr = new int[] { i };
+                    AddHistorySnap();
+                }               
+            }
+            return;
+        }
+
         private unsafe AudioFrame GenerateAudioData(uint samples)
         {
             // Buffer size is (number of samples) * (size of each sample)
@@ -648,7 +695,7 @@ namespace Algo
                         dataInFloat[i] = amplitude * arr[j];
                     }
                     //double sinValue = amplitude * Math.Sin(theta);
-                    
+
                     theta += sampleIncrement;
                 }
             }
