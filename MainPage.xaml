@@ -26,21 +26,39 @@
             <ComboBoxItem>Selection sort</ComboBoxItem>
             <ComboBoxItem>Max heap sort</ComboBoxItem>
             <ComboBoxItem>Odd-even sort</ComboBoxItem>
+            <ComboBoxItem>LSD radix sort</ComboBoxItem>
         </ComboBox>
-        <ComboBox x:Name="distribcomboBox" Margin="16,0,0,99" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Distribution:">
+        <ComboBox x:Name="distribcomboBox" Margin="16,0,0,99" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Distribution:" SelectionChanged="DistribcomboBox_SelectionChanged">
             <ComboBoxItem>Linear</ComboBoxItem>
+            <ComboBoxItem>Few unique</ComboBoxItem>
+            <ComboBoxItem>No unique</ComboBoxItem>
             <ComboBoxItem>Noise</ComboBoxItem>
+            <ComboBoxItem>Quadratic curve</ComboBoxItem>
+            <ComboBoxItem>Square root curve</ComboBoxItem>
+            <ComboBoxItem>Cubic curve</ComboBoxItem>
+            <ComboBoxItem>Quintic curve</ComboBoxItem>
+            <ComboBoxItem>Cube root curve</ComboBoxItem>
+            <ComboBoxItem>Fifth root curve</ComboBoxItem>
             <ComboBoxItem>Sine wave</ComboBoxItem>
             <ComboBoxItem>Cosine wave</ComboBoxItem>
             <ComboBoxItem>Tangent wave</ComboBoxItem>
-            <ComboBoxItem>...</ComboBoxItem>
+            <ComboBoxItem>Perlin noise</ComboBoxItem>
+            <ComboBoxItem>Perlin noise curve</ComboBoxItem>
+            <ComboBoxItem>Bell curve</ComboBoxItem>
+            <ComboBoxItem>Ruler</ComboBoxItem>
+            <ComboBoxItem>Blancmange curve</ComboBoxItem>
+            <ComboBoxItem>Cantor function</ComboBoxItem>
+            <ComboBoxItem>Sum of divisors</ComboBoxItem>
+            <ComboBoxItem>OEIS "fly straight"</ComboBoxItem>
+            <ComboBoxItem>Decreasing random</ComboBoxItem>
+            <ComboBoxItem>Modulo function</ComboBoxItem>
         </ComboBox>
         <ComboBox x:Name="shufflecomboBox" Margin="16,0,0,11" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Shuffle:">
+            <ComboBoxItem>Reset distribution</ComboBoxItem>
             <ComboBoxItem>Random</ComboBoxItem>
             <ComboBoxItem>Reversed</ComboBoxItem>
             <ComboBoxItem>Sorted</ComboBoxItem>
             <ComboBoxItem>Reverse sorted</ComboBoxItem>
-            <ComboBoxItem>None</ComboBoxItem>
             <ComboBoxItem>Max heapified</ComboBoxItem>
         </ComboBox>
         <Slider x:Name="speedSlider" Height="75" Margin="0,0,7,39" VerticalAlignment="Bottom" Header="Sorting speed:" Maximum="45" Value="25" SmallChange="1" IsDirectionReversed="True" HorizontalAlignment="Right" Width="456" FontSize="24"/>
