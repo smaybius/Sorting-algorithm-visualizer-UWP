@@ -1,4 +1,5 @@
-﻿using System;
+﻿using algoritmaanalizi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -80,6 +81,7 @@ namespace Algo
             for (int i = 0; i < arr.Length; i++)
             {
                 arr[i] = i + 1;
+                selectedArr = new int[] { i };
             }
             Array.Sort(arr);
             AddHistorySnap();
@@ -96,7 +98,7 @@ namespace Algo
             //disable the shuffle button if the shuffle is set to "none" (option 4)
             //if (shufflecomboBox.SelectedIndex == 4)
             //{
-                ShuffleArray();
+            ShuffleArray();
             //}
 
             //frameInputNode.Start();
@@ -112,378 +114,8 @@ namespace Algo
                 isPaused = false;
                 selectedHistory = new List<int[]>();
                 sortHistory = new List<int[]>();
-                arr = new int[(int)ArraySize.Value];
                 switch (shufflecomboBox.SelectedIndex)
                 {
-                    case 0: //reset
-                        int n = arr.Length - 1;
-                        double c = 2 * Math.PI / n;
-                        switch (distribcomboBox.SelectedIndex)
-                        {
-                            //case 0: linear, default
-                            case 1: //few unique
-                                int l = 0, r, t = Math.Min(arr.Length, 8);
-                                for (int i = 0; i < t; i++)
-                                {
-                                    if (random.NextDouble() < 0.5)
-                                    {
-                                        l++;
-                                    }
-                                }
-                                r = arr.Length - (t - l);
-                                for (int i = 0; i < l; i++)
-                                {
-                                    arr[i] = (int)(arr.Length * 0.25);
-                                }
-
-                                for (int i = 0; i < r; i++)
-                                {
-                                    arr[i] = arr.Length / 2;
-                                }
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(arr.Length * 0.75);
-                                }
-
-                                break;
-                            case 2: //no unique
-                                int val = arr.Length / 2;
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = val;
-                                }
-                                break;
-                            case 3: //noise
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = random.Next(arr.Length);
-                                }
-                                break;
-                            case 4: //quadratic curve
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(Math.Pow(i, 2) / arr.Length);
-                                }
-
-                                break;
-                            case 5: //square root curve
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(Math.Sqrt(i) * Math.Sqrt(arr.Length));
-                                }
-
-                                break;
-                            case 6: //cubic curve
-                                double mid = (arr.Length - 1) / 2d;
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)((Math.Pow(i - mid, 3) / Math.Pow(mid, 3 - 1)) + mid);
-                                }
-
-                                break;
-                            case 7: //quintic curve
-                                double midd = (arr.Length - 1) / 2d;
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)((Math.Pow(i - midd, 5) / Math.Pow(midd, 5 - 1)) + midd);
-                                }
-
-                                break;
-                            case 8: //cube root curve
-                                double h = arr.Length / 2d;
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    double vall = i / h - 1,
-                                           root = vall < 0 ? -Math.Pow(-vall, 1d / 3) : Math.Pow(vall, 1d / 3);
-
-                                    arr[i] = (int)(h * (root + 1));
-                                }
-                                break;
-                            case 9: //fifth root curve
-                                double hh = arr.Length / 2d;
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    double vall = i / hh - 1,
-                                           root = vall < 0 ? -Math.Pow(-vall, 1d / 5) : Math.Pow(vall, 1d / 5);
-
-                                    arr[i] = (int)(hh * (root + 1));
-                                }
-                                break;
-                            case 10: //sine
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(n * (Math.Sin(c * i) + 1) / 2);
-                                }
-                                break;
-                            case 11: //cosine
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(n * (Math.Cos(c * i) + 1) / 2);
-                                }
-                                break;
-                            case 12: //tangent
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(n * (Math.Tan(c * i) + 1) / 2);
-                                }
-                                break;
-                            case 13: //perlin noise
-                                int[] perlinNoise = new int[arr.Length];
-
-                                float step = 1f / arr.Length;
-                                float randomStart = random.Next(arr.Length);
-                                int octave = (int)(Math.Log(arr.Length) / Math.Log(2));
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    int value = (int)(PerlinNoise.ReturnFracBrownNoise(randomStart, octave) * arr.Length);
-                                    perlinNoise[i] = value;
-                                    randomStart += step;
-                                }
-
-                                int minimum = int.MaxValue;
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    if (perlinNoise[i] < minimum)
-                                    {
-                                        minimum = perlinNoise[i];
-                                    }
-                                }
-                                minimum = Math.Abs(minimum);
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    perlinNoise[i] += minimum;
-                                }
-
-                                double maximum = double.MinValue;
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    if (perlinNoise[i] > maximum)
-                                    {
-                                        maximum = perlinNoise[i];
-                                    }
-                                }
-                                double scale = arr.Length / maximum;
-                                if (scale is < 1.0 or > 1.8)
-                                {
-                                    for (int i = 0; i < arr.Length; i++)
-                                    {
-                                        perlinNoise[i] = (int)(perlinNoise[i] * scale);
-                                    }
-                                }
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = Math.Min(perlinNoise[i], arr.Length - 1);
-                                }
-                                break;
-                            case 14: //perlin noise curve
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    int value = 0 - (int)(PerlinNoise.ReturnNoise((float)i / arr.Length) * arr.Length);
-                                    arr[i] = Math.Min(value, arr.Length - 1);
-                                }
-                                break;
-                            case 15: //bell curve
-                                double stepp = 8d / arr.Length;
-                                double position = -4;
-                                int constant = 1264;
-                                double factor = arr.Length / 512d;
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    double square = Math.Pow(position, 2);
-                                    double negativeSquare = 0 - square;
-                                    double halfNegSquare = negativeSquare / 2d;
-                                    double numerator = constant * factor * Math.Pow(Math.E, halfNegSquare);
-
-                                    double doublePi = 2 * Math.PI;
-                                    double denominator = Math.Sqrt(doublePi);
-
-                                    arr[i] = (int)(numerator / denominator);
-                                    position += stepp;
-                                }
-                                break;
-                            case 16: //ruler
-                                int steppp = Math.Max(1, arr.Length / 256);
-                                int floorLog2 = (int)(Math.Log(arr.Length / steppp) / Math.Log(2));
-                                int lowest;
-                                for (lowest = steppp; 2 * lowest <= arr.Length / 4; lowest *= 2) ;
-                                bool[] digits = new bool[floorLog2 + 2];
-
-                                int ii, jj;
-                                for (ii = 0; ii + steppp <= arr.Length; ii += steppp)
-                                {
-                                    for (jj = 0; digits[jj]; jj++) ;
-                                    digits[jj] = true;
-
-                                    for (int k = 0; k < steppp; k++)
-                                    {
-                                        int value = arr.Length / 2 - Math.Min((1 << jj) * steppp, lowest);
-                                        arr[ii + k] = value;
-                                    }
-
-                                    for (int k = 0; k < jj; k++) digits[k] = false;
-                                }
-
-                                for (jj = 0; digits[jj]; jj++) ;
-                                digits[jj] = true;
-                                while (ii < arr.Length)
-                                {
-                                    int value = Math.Max(arr.Length / 2 - ((1 << jj) * steppp), arr.Length / 4);
-                                    arr[ii++] = value;
-                                }
-                                break;
-                            case 17: //blancmange curve
-                                int floorLog22 = (int)(Math.Log(arr.Length) / Math.Log(2));
-
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    int value = (int)(arr.Length * curveSum(floorLog22, (double)i / arr.Length));
-                                    arr[i] = value;
-                                }
-                                double curveSum(int n, double x)
-                                {
-                                    double sum = 0;
-                                    while (n >= 0)
-                                    {
-                                        sum += curve(n--, x);
-                                    }
-
-                                    return sum;
-                                }
-
-                                double curve(int n, double x)
-                                {
-                                    return triangleWave((1 << n) * x) / (1 << n);
-                                }
-
-                                double triangleWave(double x)
-                                {
-                                    return Math.Abs(x - (int)(x + 0.5));
-                                }
-                                break;
-                            case 18: //cantor function
-                                cantor(arr, 0, arr.Length, 0, arr.Length - 1);
-                                void cantor(int[] array, int a, int b, int min, int max)
-                                {
-                                    if (b - a < 1 || max == min)
-                                    {
-                                        return;
-                                    }
-
-                                    int mid = (min + max) / 2;
-                                    if (b - a == 1)
-                                    {
-                                        array[a] = mid;
-                                        return;
-                                    }
-
-                                    int t1 = (a + a + b) / 3, t2 = (a + b + b + 2) / 3;
-
-                                    for (int i = t1; i < t2; i++)
-                                    {
-                                        array[i] = mid;
-                                    }
-
-                                    cantor(array, a, t1, min, mid);
-                                    cantor(array, t2, b, mid + 1, max);
-                                }
-                                break;
-                            case 19: //sum of divisors
-                                int[] nn = new int[arr.Length];
-
-                                nn[0] = 0;
-                                nn[1] = 1;
-                                double max = 1;
-
-                                for (int i = 2; i < arr.Length; i++)
-                                {
-                                    nn[i] = sumDivisors(i);
-                                    if (nn[i] > max) max = nn[i];
-                                }
-
-                                double scalee = Math.Min((arr.Length - 1) / max, 1);
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(nn[i] * scalee);
-                                }
-                                int sumDivisors(int n)
-                                {
-                                    int sum = n + 1;
-                                    for (int i = 2; i <= (int)Math.Sqrt(n); i++)
-                                    {
-                                        if (n % i == 0)
-                                        {
-                                            if (i == n / i)
-                                            {
-                                                sum += i;
-                                            }
-                                            else
-                                            {
-                                                sum += i + n / i;
-                                            }
-                                        }
-                                    }
-                                    return sum;
-                                }
-                                break;
-                            case 20: //oeis fly straight
-                                int[] fsd = new int[arr.Length];
-
-                                double maxx;
-                                maxx = fsd[0] = fsd[1] = 1;
-                                for (int i = 2; i < arr.Length; i++)
-                                {
-                                    int g = gcd(fsd[i - 1], i);
-                                    fsd[i] = fsd[i - 1] / g + (g == 1 ? i + 1 : 0);
-                                    if (fsd[i] > maxx)
-                                    {
-                                        maxx = fsd[i];
-                                    }
-                                }
-
-                                double scalew = Math.Min((arr.Length - 1) / maxx, 1);
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = (int)(fsd[i] * scalew);
-                                }
-                                int gcd(int a, int b)
-                                {
-                                    return b == 0 ? a : gcd(b, a % b);
-                                }
-                                break;
-                            case 21: //decreasing random
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    int rr = random.Next(arr.Length - i) + i;
-                                    arr[i] = rr;
-                                }
-                                break;
-                            case 22: //modulo function
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = 2 * (arr.Length % (i + 1));
-                                }
-                                break;
-                            default: //case 0
-                                for (int i = 0; i < arr.Length; i++)
-                                {
-                                    arr[i] = i + 1;
-                                }
-                                break;
-                        }
-                        AddHistorySnap();
-                        break;
                     case 1: //random
                         for (int i = 0; i < arr.Length; i++)
                         {
@@ -492,8 +124,8 @@ namespace Algo
                             arr[i] = arr[switchIndex];
                             arr[switchIndex] = oldArrItem;
                             selectedArr = new int[] { i };
-                            AddHistorySnap();
                         }
+                        AddHistorySnap();
                         break;
                     case 2: //reversed
                         Array.Reverse(arr);
@@ -514,8 +146,6 @@ namespace Algo
                             Heapify(i, arr.Length);
                         }
                         selectedArr = new int[] { arr.Length - 1 };
-
-                        AddHistorySnap();
 
                         void Heapify(int i, int topI)
                         {
@@ -555,10 +185,10 @@ namespace Algo
                                 arrAccesses += 4;
 
                                 selectedArr = new int[] { i };
-                                AddHistorySnap();
                                 Heapify(maxI, topI);
                             }
                         }
+                        AddHistorySnap();
                         break;
                     default: //none
                         AddHistorySnap();
@@ -617,6 +247,11 @@ namespace Algo
                     break;
                 case 7:
                     RadixSort(arr);
+                    DrawHistory();
+                    break;
+                case 8:
+                    GrailSort gs = new();
+                    gs.GrailSortInPlace(arr, 0, arr.Length - 1);
                     DrawHistory();
                     break;
                 default:

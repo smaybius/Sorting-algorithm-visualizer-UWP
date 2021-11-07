@@ -27,6 +27,7 @@
             <ComboBoxItem>Max heap sort</ComboBoxItem>
             <ComboBoxItem>Odd-even sort</ComboBoxItem>
             <ComboBoxItem>LSD radix sort</ComboBoxItem>
+            <ComboBoxItem>Grail sort</ComboBoxItem>
         </ComboBox>
         <ComboBox x:Name="distribcomboBox" Margin="16,0,0,99" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Distribution:" SelectionChanged="DistribcomboBox_SelectionChanged">
             <ComboBoxItem>Linear</ComboBoxItem>
@@ -53,7 +54,7 @@
             <ComboBoxItem>Decreasing random</ComboBoxItem>
             <ComboBoxItem>Modulo function</ComboBoxItem>
         </ComboBox>
-        <ComboBox x:Name="shufflecomboBox" Margin="16,0,0,11" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Shuffle:">
+        <ComboBox x:Name="shufflecomboBox" Margin="16,0,0,11" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="1" Header="Shuffle:">
             <ComboBoxItem>Reset distribution</ComboBoxItem>
             <ComboBoxItem>Random</ComboBoxItem>
             <ComboBoxItem>Reversed</ComboBoxItem>

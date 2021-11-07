@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Algo
 {
-    class PerlinNoise
+    internal class PerlinNoise
     {
         private static readonly int[] perm = {
             151,160,137,91,90,15,
@@ -29,7 +25,7 @@ namespace Algo
 
         private static float Fade(float t)
         {
-            return t * t * t * (t * (t * 6 - 15) + 10);
+            return t * t * t * ((t * ((t * 6) - 15)) + 10);
         }
 
         private static float Grad(int hash, float x)
@@ -39,7 +35,7 @@ namespace Algo
 
         private static float Lerp(float t, float a, float b)
         {
-            return a + t * (b - a);
+            return a + (t * (b - a));
         }
 
         public static float ReturnNoise(float x)
