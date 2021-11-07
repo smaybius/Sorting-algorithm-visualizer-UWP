@@ -1,5 +1,4 @@
-﻿using algoritmaanalizi;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -726,14 +725,56 @@ namespace Algo
             return bucketNumber;
         }
 
-        private static void InitializeBuckets(List<Queue<int>> buckets)
+        private void InitializeBuckets(List<Queue<int>> buckets)
         {
             for (int i = 0; i < 10; i++)
             {
                 Queue<int> q = new();
                 buckets.Add(q);
+                selectedArr = new int[] { i };
+                AddHistorySnap();
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private unsafe AudioFrame GenerateAudioData(uint samples)
         {

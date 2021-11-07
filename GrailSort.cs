@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace algoritmaanalizi
+namespace Algo
 {
     /*
  * MIT License
@@ -60,8 +60,7 @@ namespace algoritmaanalizi
     //
     // Editor: AceOfSpadesProduc100
     //
-    // Current status: EVERY VERSION PASSING ALL TESTS / POTENTIALLY FIXED as of
-    //                 10/23/20
+    // Current status: Still testing on a visualizer
     internal enum Subarray
     {
         LEFT,
@@ -75,8 +74,6 @@ namespace algoritmaanalizi
 
     internal class GrailSort
     {
-        private static readonly int GRAIL_STATIC_EXT_BUFFER_LEN = 512;
-
         private int[] extBuffer;
         private int extBufferLen;
 
