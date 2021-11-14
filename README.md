@@ -1,5 +1,20 @@
 Extremely WIP and barely of the description, but it's an improved UWP port of KrasiF's sorting algos, a WPF program.
 
+Major credit to ArrayV (https://github.com/Gaming32/ArrayV-v4.0) for the shuffles and distributions. The following shuffles and distributions either don't work right or make the program crash:
+- Tangent wave
+- Shifted element
+- Final merge pass
+- Binary search tree traversal
+- Inverted binary search tree
+- Final pairwise pass
+- Recursive reversal
+- Gray code fractal
+- Grailsort adversary
+- First circle pass
+- half reversal
+- inverted pipe organ
+- PDQsort adversary
+
 # Guide for adding your own algorithms
 - Taking odd-even as a reference, add the lines `selectedArr = new int[] { i };` and `AddHistorySnap();` at the bottom of either each or the needed loops. "i" in the first one could be whichever first variable is declared in the loop if it's not a regular "for" loop.
 - Add a new ComboBoxItem at the bottom of the combo box for the algorithms in the XAML, and then go to the code-behind (the .xaml.cs file) and into `Visualize_Click(...)`, and add a new "case" with the number after the above. For example, if your new algorithm is the 6th, then add below the last `break;`:
