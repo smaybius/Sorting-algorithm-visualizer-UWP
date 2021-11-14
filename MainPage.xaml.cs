@@ -225,6 +225,12 @@ namespace AlgoUWP
             }
         }
 
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem b = sender as MenuFlyoutItem;
+            comboBox.Content = b.Text;
+        }
+
         private void ShuffleArray()
         {
             //create a random starting array, if its not already premade
@@ -1482,58 +1488,58 @@ namespace AlgoUWP
             ResetPauseButtonText();
 
 
-            switch (comboBox.SelectedIndex)
+            switch (comboBox.Content)
             {
-                case 0:
+                case "Merge sort":
                     MergeSort(0, arr.Length);
                     DrawHistory();
                     break;
-                case 1:
+                case "Insertion sort":
                     InsertionSort();
                     DrawHistory();
                     break;
-                case 2:
+                case "Left/left quick sort":
                     QuickSort(0, arr.Length);
                     DrawHistory();
                     break;
-                case 3:
-                    LRQuickSort(arr, 0, arr.Length - 1);
-                    DrawHistory();
-                    break;
-                case 4:
+                case "Bubble sort":
                     BubbleSort();
                     DrawHistory();
                     break;
-                case 5:
+                case "Selection sort":
                     SelectionSort();
                     DrawHistory();
                     break;
-                case 6:
+                case "Max heap sort":
                     HeapSort();
                     DrawHistory();
                     break;
-                case 7:
+                case "Odd-even sort":
                     OddEvenSort(arr, arr.Length); //first custom sort, also the first to not be hardcoded to the program's system.
                     DrawHistory();
                     break;
-                case 8:
+                case "LSD radix sort":
                     RadixSort(arr);
                     DrawHistory();
                     break;
-                case 9:
+                case "Shell sort":
                     ShellSort(arr);
                     DrawHistory();
                     break;
-                case 10:
+                case "Move to back sort": 
                     MoveToBackSort();
                     DrawHistory();
                     break;
-                case 11:
+                case "Weird insertion sort":
                     InsertionWhat(arr);
                     DrawHistory();
                     break;
-                case 12:
+                case "Grail sort":
                     GrailCommonSort(arr, 0, arr.Length, null, 0, 0);
+                    DrawHistory();
+                    break;
+                case "Lazy stable sort":
+                    GrailLazyStableSort(arr, 0, arr.Length);
                     DrawHistory();
                     break;
                 default:
@@ -3233,5 +3239,7 @@ namespace AlgoUWP
                 frameInputNode.AddFrame(audioData);
             }
         }
+
+        
     }
 }

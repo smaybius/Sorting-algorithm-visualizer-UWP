@@ -18,21 +18,37 @@
         </Canvas>
         <Button x:Name="visualizeBtn" Content="Visualize" Height="131" Margin="0,0,7,140" VerticalAlignment="Bottom" Click="Visualize_Click" Foreground="White" Background="#FF686868" BorderBrush="{x:Null}" FontWeight="Bold" FontSize="36" HorizontalAlignment="Right" Width="456"/>
         <Button x:Name="shuffleBtn" Content="Shuffle" Height="68" Margin="0,0,585,161" VerticalAlignment="Bottom" Click="ShuffleBtn_Click" Foreground="White" Background="#FF686868" BorderBrush="{x:Null}" FontWeight="Bold" FontSize="24" Width="200" HorizontalAlignment="Right"/>
-        <ComboBox x:Name="comboBox" Margin="6,0,0,187" Width="260" Height="83" FontSize="24" SelectedIndex="0" Header="Algorithm:" VerticalAlignment="Bottom">
-            <ComboBoxItem>0: Merge sort</ComboBoxItem>
-            <ComboBoxItem>1: Insertion sort</ComboBoxItem>
-            <ComboBoxItem>2: Left/left quick sort</ComboBoxItem>
-            <ComboBoxItem>3: Left/right quick sort</ComboBoxItem>
-            <ComboBoxItem>4: Bubble sort</ComboBoxItem>
-            <ComboBoxItem>5: Selection sort</ComboBoxItem>
-            <ComboBoxItem>6: Max heap sort</ComboBoxItem>
-            <ComboBoxItem>7: Odd-even sort</ComboBoxItem>
-            <ComboBoxItem>8: LSD radix sort</ComboBoxItem>
-            <ComboBoxItem>9: Shell sort</ComboBoxItem>
-            <ComboBoxItem>10: Move to back sort</ComboBoxItem>
-            <ComboBoxItem>11: Weird insertion sort</ComboBoxItem>
-            <ComboBoxItem>12: Grail sort</ComboBoxItem>
-        </ComboBox>
+        <Button x:Name="comboBox" Margin="16,0,0,187" Width="260" Height="45" FontSize="24" VerticalAlignment="Bottom" Content="Merge sort">
+            <Button.Flyout>
+                <MenuFlyout>
+                    <MenuFlyoutSubItem Text="Distributive sorts">
+                        <MenuFlyoutItem Text="LSD radix sort" Click="MenuFlyoutItem_Click"/>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutSubItem Text="Exchange sorts">
+                        <MenuFlyoutItem Text="Left/left quick sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Bubble sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Odd-even sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Move to back sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Weird insertion sort" Click="MenuFlyoutItem_Click"/>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutSubItem Text="Insertion sorts">
+                        <MenuFlyoutItem Text="Insertion sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Shell sort" Click="MenuFlyoutItem_Click"/>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutSubItem Text="Merge sorts">
+                        <MenuFlyoutItem Text="Merge sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Grail sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Lazy stable sort" Click="MenuFlyoutItem_Click"/>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutSubItem Text="Selection sorts">
+                        <MenuFlyoutItem Text="Selection sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Max heap sort" Click="MenuFlyoutItem_Click"/>
+                    </MenuFlyoutSubItem>
+                </MenuFlyout>
+            </Button.Flyout>
+
+        </Button>
+
         <ComboBox x:Name="distribcomboBox" Margin="16,0,0,99" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Distribution:">
             <ComboBoxItem>0: Linear</ComboBoxItem>
             <ComboBoxItem>1: Few unique</ComboBoxItem>
@@ -114,5 +130,6 @@
         <TextBlock x:Name="SwapsText" HorizontalAlignment="Left" Margin="10,47,0,0" TextWrapping="Wrap" Text="Swaps:" VerticalAlignment="Top" FontSize="24"/>
         <TextBlock x:Name="ReversalsText" HorizontalAlignment="Left" Margin="10,84,0,0" TextWrapping="Wrap" Text="Reversals:" VerticalAlignment="Top" FontSize="24"/>
         <TextBlock x:Name="WritesText" HorizontalAlignment="Left" Margin="10,121,0,0" TextWrapping="Wrap" Text="Writes:" VerticalAlignment="Top" FontSize="24"/>
+
     </Grid>
 </Page>
