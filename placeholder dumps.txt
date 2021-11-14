@@ -1,6 +1,13 @@
 ﻿case 0: //reset
                         int n = arr.Length - 1;
                         double c = 2 * Math.PI / n;
+                        arr = new int[(int)ArraySize.Value];
+                        for (int i = 0; i < arr.Length; i++)
+                        {
+                            arr[i] = i + 1;
+                            selectedArr = new int[] { i };
+                        }
+                        AddHistorySnap();
                         switch (distribcomboBox.SelectedIndex)
                         {
                             //case 0: linear, default
@@ -41,27 +48,33 @@
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = val;
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 3: //noise
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = random.Next(arr.Length);
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 4: //quadratic curve
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)(Math.Pow(i, 2) / arr.Length);
+                                    selectedArr = new int[] { i };
                                 }
-
+                                AddHistorySnap();
                                 break;
                             case 5: //square root curve
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)(Math.Sqrt(i) * Math.Sqrt(arr.Length));
+                                    selectedArr = new int[] { i };
                                 }
-
+                                AddHistorySnap();
                                 break;
                             case 6: //cubic curve
                                 double mid = (arr.Length - 1) / 2d;
@@ -69,8 +82,9 @@
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)((Math.Pow(i - mid, 3) / Math.Pow(mid, 3 - 1)) + mid);
+                                    selectedArr = new int[] { i };
                                 }
-
+                                AddHistorySnap();
                                 break;
                             case 7: //quintic curve
                                 double midd = (arr.Length - 1) / 2d;
@@ -78,8 +92,9 @@
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)((Math.Pow(i - midd, 5) / Math.Pow(midd, 5 - 1)) + midd);
+                                    selectedArr = new int[] { i };
                                 }
-
+                                AddHistorySnap();
                                 break;
                             case 8: //cube root curve
                                 double h = arr.Length / 2d;
@@ -90,7 +105,9 @@
                                            root = vall < 0 ? -Math.Pow(-vall, 1d / 3) : Math.Pow(vall, 1d / 3);
 
                                     arr[i] = (int)(h * (root + 1));
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 9: //fifth root curve
                                 double hh = arr.Length / 2d;
@@ -101,28 +118,36 @@
                                            root = vall < 0 ? -Math.Pow(-vall, 1d / 5) : Math.Pow(vall, 1d / 5);
 
                                     arr[i] = (int)(hh * (root + 1));
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 10: //sine
 
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)(n * (Math.Sin(c * i) + 1) / 2);
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 11: //cosine
 
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)(n * (Math.Cos(c * i) + 1) / 2);
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 12: //tangent
 
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)(n * (Math.Tan(c * i) + 1) / 2);
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 13: //perlin noise
                                 int[] perlinNoise = new int[arr.Length];
@@ -136,6 +161,7 @@
                                     int value = (int)(PerlinNoise.ReturnFracBrownNoise(randomStart, octave) * arr.Length);
                                     perlinNoise[i] = value;
                                     randomStart += step;
+                                    selectedArr = new int[] { i };
                                 }
 
                                 int minimum = int.MaxValue;
@@ -145,11 +171,13 @@
                                     {
                                         minimum = perlinNoise[i];
                                     }
+                                    selectedArr = new int[] { i };
                                 }
                                 minimum = Math.Abs(minimum);
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     perlinNoise[i] += minimum;
+                                    selectedArr = new int[] { i };
                                 }
 
                                 double maximum = double.MinValue;
@@ -159,6 +187,7 @@
                                     {
                                         maximum = perlinNoise[i];
                                     }
+                                    selectedArr = new int[] { i };
                                 }
                                 double scale = arr.Length / maximum;
                                 if (scale is < 1.0 or > 1.8)
@@ -166,20 +195,25 @@
                                     for (int i = 0; i < arr.Length; i++)
                                     {
                                         perlinNoise[i] = (int)(perlinNoise[i] * scale);
+                                        selectedArr = new int[] { i };
                                     }
                                 }
 
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = Math.Min(perlinNoise[i], arr.Length - 1);
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 14: //perlin noise curve
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     int value = 0 - (int)(PerlinNoise.ReturnNoise((float)i / arr.Length) * arr.Length);
                                     arr[i] = Math.Min(value, arr.Length - 1);
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 15: //bell curve
                                 double stepp = 8d / arr.Length;
@@ -199,7 +233,9 @@
 
                                     arr[i] = (int)(numerator / denominator);
                                     position += stepp;
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 16: //ruler
                                 int steppp = Math.Max(1, arr.Length / 256);
@@ -221,6 +257,7 @@
                                     }
 
                                     for (int k = 0; k < jj; k++) digits[k] = false;
+                                    selectedArr = new int[] { ii };
                                 }
 
                                 for (jj = 0; digits[jj]; jj++) ;
@@ -229,7 +266,9 @@
                                 {
                                     int value = Math.Max(arr.Length / 2 - ((1 << jj) * steppp), arr.Length / 4);
                                     arr[ii++] = value;
+                                    selectedArr = new int[] { ii };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 17: //blancmange curve
                                 int floorLog22 = (int)(Math.Log(arr.Length) / Math.Log(2));
@@ -238,6 +277,7 @@
                                 {
                                     int value = (int)(arr.Length * curveSum(floorLog22, (double)i / arr.Length));
                                     arr[i] = value;
+                                    selectedArr = new int[] { i };
                                 }
                                 double curveSum(int n, double x)
                                 {
@@ -259,6 +299,7 @@
                                 {
                                     return Math.Abs(x - (int)(x + 0.5));
                                 }
+                                AddHistorySnap();
                                 break;
                             case 18: //cantor function
                                 cantor(arr, 0, arr.Length, 0, arr.Length - 1);
@@ -281,11 +322,13 @@
                                     for (int i = t1; i < t2; i++)
                                     {
                                         array[i] = mid;
+                                        selectedArr = new int[] { i };
                                     }
 
                                     cantor(array, a, t1, min, mid);
                                     cantor(array, t2, b, mid + 1, max);
                                 }
+                                AddHistorySnap();
                                 break;
                             case 19: //sum of divisors
                                 int[] nn = new int[arr.Length];
@@ -298,12 +341,14 @@
                                 {
                                     nn[i] = sumDivisors(i);
                                     if (nn[i] > max) max = nn[i];
+                                    selectedArr = new int[] { i };
                                 }
 
                                 double scalee = Math.Min((arr.Length - 1) / max, 1);
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)(nn[i] * scalee);
+                                    selectedArr = new int[] { i };
                                 }
                                 int sumDivisors(int n)
                                 {
@@ -321,9 +366,11 @@
                                                 sum += i + n / i;
                                             }
                                         }
+                                        selectedArr = new int[] { i };
                                     }
                                     return sum;
                                 }
+                                AddHistorySnap();
                                 break;
                             case 20: //oeis fly straight
                                 int[] fsd = new int[arr.Length];
@@ -338,30 +385,37 @@
                                     {
                                         maxx = fsd[i];
                                     }
+                                    selectedArr = new int[] { i };
                                 }
 
                                 double scalew = Math.Min((arr.Length - 1) / maxx, 1);
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = (int)(fsd[i] * scalew);
+                                    selectedArr = new int[] { i };
                                 }
                                 int gcd(int a, int b)
                                 {
                                     return b == 0 ? a : gcd(b, a % b);
                                 }
+                                AddHistorySnap();
                                 break;
                             case 21: //decreasing random
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     int rr = random.Next(arr.Length - i) + i;
                                     arr[i] = rr;
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             case 22: //modulo function
                                 for (int i = 0; i < arr.Length; i++)
                                 {
                                     arr[i] = 2 * (arr.Length % (i + 1));
+                                    selectedArr = new int[] { i };
                                 }
+                                AddHistorySnap();
                                 break;
                             default: //case 0
                                 for (int i = 0; i < arr.Length; i++)
@@ -372,5 +426,5 @@
                                 AddHistorySnap();
                                 break;
                         }
-                        
+
                         break;

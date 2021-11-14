@@ -1,8 +1,7 @@
 ﻿<Page
-    x:Class="Algo.MainPage"
+    x:Class="AlgoUWP.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Algo"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -11,6 +10,7 @@
     SizeChanged="Window_SizeChanged" PointerReleased="Window_MouseLeftButtonUp">
 
     <Grid>
+
         <Canvas x:Name="canv" PointerPressed="Canv_MouseLeftButtonDown" PointerMoved="Canv_MouseMove" Background="Transparent" Margin="0,0,-2,280" RenderTransformOrigin="0.5,0.5">
             <Canvas.RenderTransform>
                 <CompositeTransform ScaleY="-1"/>
@@ -19,60 +19,99 @@
         <Button x:Name="visualizeBtn" Content="Visualize" Height="131" Margin="0,0,7,140" VerticalAlignment="Bottom" Click="Visualize_Click" Foreground="White" Background="#FF686868" BorderBrush="{x:Null}" FontWeight="Bold" FontSize="36" HorizontalAlignment="Right" Width="456"/>
         <Button x:Name="shuffleBtn" Content="Shuffle" Height="68" Margin="0,0,585,161" VerticalAlignment="Bottom" Click="ShuffleBtn_Click" Foreground="White" Background="#FF686868" BorderBrush="{x:Null}" FontWeight="Bold" FontSize="24" Width="200" HorizontalAlignment="Right"/>
         <ComboBox x:Name="comboBox" Margin="6,0,0,187" Width="260" Height="83" FontSize="24" SelectedIndex="0" Header="Algorithm:" VerticalAlignment="Bottom">
-            <ComboBoxItem>Merge sort</ComboBoxItem>
-            <ComboBoxItem>Insertion sort</ComboBoxItem>
-            <ComboBoxItem>Quick sort</ComboBoxItem>
-            <ComboBoxItem>Bubble sort</ComboBoxItem>
-            <ComboBoxItem>Selection sort</ComboBoxItem>
-            <ComboBoxItem>Max heap sort</ComboBoxItem>
-            <ComboBoxItem>Odd-even sort</ComboBoxItem>
-            <ComboBoxItem>LSD radix sort</ComboBoxItem>
-            <ComboBoxItem>Grail sort</ComboBoxItem>
+            <ComboBoxItem>0: Merge sort</ComboBoxItem>
+            <ComboBoxItem>1: Insertion sort</ComboBoxItem>
+            <ComboBoxItem>2: Left/left quick sort</ComboBoxItem>
+            <ComboBoxItem>3: Left/right quick sort</ComboBoxItem>
+            <ComboBoxItem>4: Bubble sort</ComboBoxItem>
+            <ComboBoxItem>5: Selection sort</ComboBoxItem>
+            <ComboBoxItem>6: Max heap sort</ComboBoxItem>
+            <ComboBoxItem>7: Odd-even sort</ComboBoxItem>
+            <ComboBoxItem>8: LSD radix sort</ComboBoxItem>
+            <ComboBoxItem>9: Shell sort</ComboBoxItem>
+            <ComboBoxItem>10: Move to back sort</ComboBoxItem>
+            <ComboBoxItem>11: Weird insertion sort</ComboBoxItem>
         </ComboBox>
-        <ComboBox x:Name="distribcomboBox" Margin="16,0,0,99" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Distribution:" SelectionChanged="DistribcomboBox_SelectionChanged">
-            <ComboBoxItem>Linear</ComboBoxItem>
-            <ComboBoxItem>Few unique</ComboBoxItem>
-            <ComboBoxItem>No unique</ComboBoxItem>
-            <ComboBoxItem>Noise</ComboBoxItem>
-            <ComboBoxItem>Quadratic curve</ComboBoxItem>
-            <ComboBoxItem>Square root curve</ComboBoxItem>
-            <ComboBoxItem>Cubic curve</ComboBoxItem>
-            <ComboBoxItem>Quintic curve</ComboBoxItem>
-            <ComboBoxItem>Cube root curve</ComboBoxItem>
-            <ComboBoxItem>Fifth root curve</ComboBoxItem>
-            <ComboBoxItem>Sine wave</ComboBoxItem>
-            <ComboBoxItem>Cosine wave</ComboBoxItem>
-            <ComboBoxItem>Tangent wave</ComboBoxItem>
-            <ComboBoxItem>Perlin noise</ComboBoxItem>
-            <ComboBoxItem>Perlin noise curve</ComboBoxItem>
-            <ComboBoxItem>Bell curve</ComboBoxItem>
-            <ComboBoxItem>Ruler</ComboBoxItem>
-            <ComboBoxItem>Blancmange curve</ComboBoxItem>
-            <ComboBoxItem>Cantor function</ComboBoxItem>
-            <ComboBoxItem>Sum of divisors</ComboBoxItem>
-            <ComboBoxItem>OEIS "fly straight"</ComboBoxItem>
-            <ComboBoxItem>Decreasing random</ComboBoxItem>
-            <ComboBoxItem>Modulo function</ComboBoxItem>
+        <ComboBox x:Name="distribcomboBox" Margin="16,0,0,99" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Distribution:">
+            <ComboBoxItem>0: Linear</ComboBoxItem>
+            <ComboBoxItem>1: Few unique</ComboBoxItem>
+            <ComboBoxItem>2: No unique</ComboBoxItem>
+            <ComboBoxItem>3: Noise</ComboBoxItem>
+            <ComboBoxItem>4: Quadratic curve</ComboBoxItem>
+            <ComboBoxItem>5: Square root curve</ComboBoxItem>
+            <ComboBoxItem>6: Cubic curve</ComboBoxItem>
+            <ComboBoxItem>7: Quintic curve</ComboBoxItem>
+            <ComboBoxItem>8: Cube root curve</ComboBoxItem>
+            <ComboBoxItem>9: Fifth root curve</ComboBoxItem>
+            <ComboBoxItem>10: Sine wave</ComboBoxItem>
+            <ComboBoxItem>11: Cosine wave</ComboBoxItem>
+            <ComboBoxItem>12: Tangent wave</ComboBoxItem>
+            <ComboBoxItem>13: Perlin noise</ComboBoxItem>
+            <ComboBoxItem>14: Perlin noise curve</ComboBoxItem>
+            <ComboBoxItem>15: Bell curve</ComboBoxItem>
+            <ComboBoxItem>16: Ruler</ComboBoxItem>
+            <ComboBoxItem>17: Blancmange curve</ComboBoxItem>
+            <ComboBoxItem>18: Cantor function</ComboBoxItem>
+            <ComboBoxItem>19: Sum of divisors</ComboBoxItem>
+            <ComboBoxItem>20: OEIS "fly straight"</ComboBoxItem>
+            <ComboBoxItem>21: Decreasing random</ComboBoxItem>
+            <ComboBoxItem>22: Modulo function</ComboBoxItem>
         </ComboBox>
-        <ComboBox x:Name="shufflecomboBox" Margin="16,0,0,11" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="1" Header="Shuffle:">
-            <ComboBoxItem>Reset distribution</ComboBoxItem>
-            <ComboBoxItem>Random</ComboBoxItem>
-            <ComboBoxItem>Reversed</ComboBoxItem>
-            <ComboBoxItem>Sorted</ComboBoxItem>
-            <ComboBoxItem>Reverse sorted</ComboBoxItem>
-            <ComboBoxItem>Max heapified</ComboBoxItem>
+        <ComboBox x:Name="shufflecomboBox" Margin="16,0,0,11" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Shuffle:">
+            <ComboBoxItem>0: Reset distribution</ComboBoxItem>
+            <ComboBoxItem>1: Random</ComboBoxItem>
+            <ComboBoxItem>2: Reversed</ComboBoxItem>
+            <ComboBoxItem>3: Slight shuffle</ComboBoxItem>
+            <ComboBoxItem>4: Sorted</ComboBoxItem>
+            <ComboBoxItem>5: Reverse sorted</ComboBoxItem>
+            <ComboBoxItem>6: Shuffled tail</ComboBoxItem>
+            <ComboBoxItem>7: Shuffled head</ComboBoxItem>
+            <ComboBoxItem>8: Shifted element</ComboBoxItem>
+            <ComboBoxItem>9: Noisy</ComboBoxItem>
+            <ComboBoxItem>10: Shuffled odds</ComboBoxItem>
+            <ComboBoxItem>11: Final merge pass</ComboBoxItem>
+            <ComboBoxItem>12: Shuffled final merge pass</ComboBoxItem>
+            <ComboBoxItem>13: Shuffled second half</ComboBoxItem>
+            <ComboBoxItem>14: Partitioned</ComboBoxItem>
+            <ComboBoxItem>15: Sawtooth</ComboBoxItem>
+            <ComboBoxItem>16: Pipe organ</ComboBoxItem>
+            <ComboBoxItem>17: Inverted pipe organ</ComboBoxItem>
+            <ComboBoxItem>18: Interlaced</ComboBoxItem>
+            <ComboBoxItem>19: Double layered</ComboBoxItem>
+            <ComboBoxItem>20: Final radix pass</ComboBoxItem>
+            <ComboBoxItem>21: Recursive final radix pass</ComboBoxItem>
+            <ComboBoxItem>22: Half rotation</ComboBoxItem>
+            <ComboBoxItem>23: Half reverse</ComboBoxItem>
+            <ComboBoxItem>24: Binary search tree traversal</ComboBoxItem>
+            <ComboBoxItem>25: Inverted binary search tree</ComboBoxItem>
+            <ComboBoxItem>26: Logarithmic slopes</ComboBoxItem>
+            <ComboBoxItem>27: Max heapified</ComboBoxItem>
+            <ComboBoxItem>28: Min heapified</ComboBoxItem>
+            <ComboBoxItem>29: Smooth heapified</ComboBoxItem>
+            <ComboBoxItem>30: Poplar heapified</ComboBoxItem>
+            <ComboBoxItem>31: Triangular heapified</ComboBoxItem>
+            <ComboBoxItem>32: First circle run</ComboBoxItem>
+            <ComboBoxItem>33: Final pairwise pass</ComboBoxItem>
+            <ComboBoxItem>34: Recursive reversal</ComboBoxItem>
+            <ComboBoxItem>35: Gray code fractal</ComboBoxItem>
+            <ComboBoxItem>36: Sierpinski triangle</ComboBoxItem>
+            <ComboBoxItem>37: Triangular input</ComboBoxItem>
+            <ComboBoxItem>38: Quicksort adversary</ComboBoxItem>
+            <ComboBoxItem>39: PDQsort adversary</ComboBoxItem>
+            <ComboBoxItem>40: Grailsort adversary</ComboBoxItem>
+            <ComboBoxItem>41: Shuffle merge adversary</ComboBoxItem>
+            <ComboBoxItem>42: Bit reversal</ComboBoxItem>
+            <ComboBoxItem>43: Block random</ComboBoxItem>
+            <ComboBoxItem>44: Block reverse</ComboBoxItem>
         </ComboBox>
         <Slider x:Name="speedSlider" Height="75" Margin="0,0,7,39" VerticalAlignment="Bottom" Header="Sorting speed:" Maximum="45" Value="25" SmallChange="1" IsDirectionReversed="True" HorizontalAlignment="Right" Width="456" FontSize="24"/>
         <Button x:Name="pauseButton" Content="Pause" Margin="0,0,475,161" Click="PauseButton_Click" Background="#FF686868" Foreground="White" BorderBrush="{x:Null}" FontWeight="Bold" HorizontalAlignment="Right" Width="90" Height="71" VerticalAlignment="Bottom" FontSize="18"/>
-        <TextBlock HorizontalAlignment="Left" Margin="315,0,0,207" TextWrapping="Wrap" Text="Comparisons:" Width="145" Height="32" VerticalAlignment="Bottom" FontSize="24"/>
-        <TextBlock x:Name="comparisonsTxt" HorizontalAlignment="Left" Margin="485,0,0,207" TextWrapping="Wrap" Text="?" Width="147" FontWeight="Bold" Height="32" VerticalAlignment="Bottom" FontSize="24"/>
-        <TextBlock HorizontalAlignment="Left" Margin="301,0,0,175" TextWrapping="Wrap" Text="Array accesses:" Width="159" Height="32" VerticalAlignment="Bottom" FontSize="24"/>
-        <TextBlock x:Name="arrayAccTxt" HorizontalAlignment="Left" Margin="485,0,0,175" TextWrapping="Wrap" Text="?" Width="147" FontWeight="Bold" Height="32" VerticalAlignment="Bottom" FontSize="24"/>
-        <TextBlock HorizontalAlignment="Left" Margin="356,0,0,239" TextWrapping="Wrap" Text="Numbers:" Width="103" Height="32" VerticalAlignment="Bottom" FontSize="24"/>
-        <TextBlock x:Name="numsTxt" HorizontalAlignment="Left" Margin="485,0,0,239" TextWrapping="Wrap" Text="?" Width="147" FontWeight="Bold" Height="32" VerticalAlignment="Bottom" FontSize="24"/>
-        <muxc:NumberBox x:Name="ArraySize" Margin="301,0,0,81" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="125" Header="Array size:" Value="200" FontSize="24"/>
+        <muxc:NumberBox x:Name="ArraySize" Margin="301,0,0,58" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="125" Header="Array size:" Value="200" FontSize="24"/>
         <CheckBox Content="Sound" Margin="303,0,0,16" VerticalAlignment="Bottom" FontSize="24"/>
         <Slider HorizontalAlignment="Right" Margin="0,0,520,46" VerticalAlignment="Bottom" Width="166" Header="Sound volume:" Maximum="100" StepFrequency="10" Value="100" FontSize="24"/>
-
+        <TextBlock x:Name="CompsText" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Comparisons:" VerticalAlignment="Top" FontSize="24"/>
+        <TextBlock x:Name="SwapsText" HorizontalAlignment="Left" Margin="10,47,0,0" TextWrapping="Wrap" Text="Swaps:" VerticalAlignment="Top" FontSize="24"/>
+        <TextBlock x:Name="ReversalsText" HorizontalAlignment="Left" Margin="10,84,0,0" TextWrapping="Wrap" Text="Reversals:" VerticalAlignment="Top" FontSize="24"/>
+        <TextBlock x:Name="WritesText" HorizontalAlignment="Left" Margin="10,121,0,0" TextWrapping="Wrap" Text="Writes:" VerticalAlignment="Top" FontSize="24"/>
     </Grid>
 </Page>

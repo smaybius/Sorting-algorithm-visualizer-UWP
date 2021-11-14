@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Algo
+namespace AlgoUWP
 {
     internal class PerlinNoise
     {

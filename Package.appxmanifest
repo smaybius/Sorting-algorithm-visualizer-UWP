@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="407fab2a-5158-419a-9b19-db26cf118f3a"
+    Name="69d0a006-ea85-4b73-8840-17aa56d3b160"
     Publisher="CN=CDog2"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="407fab2a-5158-419a-9b19-db26cf118f3a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="69d0a006-ea85-4b73-8840-17aa56d3b160" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Algo</DisplayName>
+    <DisplayName>AlgoUWP</DisplayName>
     <PublisherDisplayName>CDog2</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -30,12 +30,12 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="Algo.App">
+      EntryPoint="AlgoUWP.App">
       <uap:VisualElements
-        DisplayName="Algo"
+        DisplayName="AlgoUWP"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="Algo"
+        Description="AlgoUWP"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
