@@ -31,6 +31,7 @@
             <ComboBoxItem>9: Shell sort</ComboBoxItem>
             <ComboBoxItem>10: Move to back sort</ComboBoxItem>
             <ComboBoxItem>11: Weird insertion sort</ComboBoxItem>
+            <ComboBoxItem>12: Grail sort</ComboBoxItem>
         </ComboBox>
         <ComboBox x:Name="distribcomboBox" Margin="16,0,0,99" Width="260" Height="83" VerticalAlignment="Bottom" FontSize="24" SelectedIndex="0" Header="Distribution:">
             <ComboBoxItem>0: Linear</ComboBoxItem>

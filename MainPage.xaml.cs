@@ -1212,359 +1212,7 @@ namespace AlgoUWP
                         AddHistorySnap();
                         break;
                     case 39: //pdq adversary
-                        int[] copy = new int[arr.Length];
-                        int[] tempm;
-                        bool hasCandidate;
-                        int gas, frozen, candidate;
-
-                        hasCandidate = false;
-                        frozen = 1;
-                        temp = new int[arr.Length];
-                        gas = arr.Length;
-                        for (int i = 0; i < arr.Length; i++)
-                        {
-                            Write(copy, i, arr[i]);
-                            Write(arr, i, i);
-                            Write(temp, i, gas);
-                        }
-
-                        //pdqLoop(arr, 0, arr.Length, false, pdqLog(arr.Length));
-
-                        for (int i = 0; i < arr.Length; i++)
-                        {
-                            Write(arr, i, copy[temp[i] - 1]);
-                        }
-
-                        int compare(int ap, int bp)
-                        {
-                            int a, b;
-                            if (!hasCandidate)
-                            {
-                                candidate = 0;
-                                hasCandidate = true;
-                            }
-
-                            a = ap;
-                            b = bp;
-
-                            if (temp[a] == gas && temp[b] == gas)
-                                if (a == candidate)
-                                    temp[a] = frozen++;
-                                else
-                                    temp[b] = frozen++;
-
-                            if (temp[a] == gas)
-                            {
-                                candidate = a;
-                                return 1;
-                            }
-
-                            if (temp[b] == gas)
-                            {
-                                candidate = b;
-                                return -1;
-                            }
-
-                            if (temp[a] < temp[b])
-                                return -1;
-                            if (temp[a] > temp[b])
-                                return 1;
-                            return 0;
-                        }
-
-                        void pdqLoop(int[] array, int begin, int end, bool Branchless, int badAllowed)
-                        {
-                            bool leftmost = true;
-
-                            while (true)
-                            {
-                                int size = end - begin;
-
-                                if (size < 24)
-                                {
-                                    if (leftmost) pdqInsertSort(array, begin, end);
-                                    else pdqUnguardInsertSort(array, begin, end);
-                                    return;
-                                }
-
-                                int halfSize = size / 2;
-                                if (size > 128)
-                                {
-                                    pdqSortThree(array, begin, begin + halfSize, end - 1);
-                                    pdqSortThree(array, begin + 1, begin + (halfSize - 1), end - 2);
-                                    pdqSortThree(array, begin + 2, begin + (halfSize + 1), end - 3);
-                                    pdqSortThree(array, begin + (halfSize - 1), begin + halfSize, begin + (halfSize + 1));
-                                    Swap(array, begin, begin + halfSize);
-                                }
-                                else pdqSortThree(array, begin + halfSize, begin, end - 1);
-
-                                if (!leftmost && !(compare(array[begin - 1], array[begin]) < 0))
-                                {
-                                    begin = pdqPartLeft(array, begin, end) + 1;
-                                    continue;
-                                }
-
-                                PDQPair partResult = pdqPartRight(array, begin, end);
-
-                                int pivotPos = partResult.GetPivotPosition();
-                                bool alreadyParted = partResult.GetPresortBool();
-
-                                int leftSize = pivotPos - begin;
-                                int rightSize = end - (pivotPos + 1);
-                                bool highUnbalance = leftSize < size / 8 || rightSize < size / 8;
-
-                                if (highUnbalance)
-                                {
-                                    if (--badAllowed == 0)
-                                    {
-                                        int length = end - begin;
-                                        for (int i = length / 2; i >= 1; i--)
-                                        {
-                                            //siftDown(array, i, length, begin);
-                                        }
-                                        return;
-                                    }
-
-                                    if (leftSize >= 24)
-                                    {
-                                        Swap(array, begin, begin + leftSize / 4);
-                                        Swap(array, pivotPos - 1, pivotPos - leftSize / 4);
-
-                                        if (leftSize > 128)
-                                        {
-                                            Swap(array, begin + 1, begin + (leftSize / 4 + 1));
-                                            Swap(array, begin + 2, begin + (leftSize / 4 + 2));
-                                            Swap(array, pivotPos - 2, pivotPos - (leftSize / 4 + 1));
-                                            Swap(array, pivotPos - 3, pivotPos - (leftSize / 4 + 2));
-                                        }
-                                    }
-
-                                    if (rightSize >= 24)
-                                    {
-                                        Swap(array, pivotPos + 1, pivotPos + (1 + rightSize / 4));
-                                        Swap(array, end - 1, end - rightSize / 4);
-
-                                        if (rightSize > 128)
-                                        {
-                                            Swap(array, pivotPos + 2, pivotPos + (2 + rightSize / 4));
-                                            Swap(array, pivotPos + 3, pivotPos + (3 + rightSize / 4));
-                                            Swap(array, end - 2, end - (1 + rightSize / 4));
-                                            Swap(array, end - 3, end - (2 + rightSize / 4));
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (alreadyParted && pdqPartialInsertSort(array, begin, pivotPos)
-                                                      && pdqPartialInsertSort(array, pivotPos + 1, end))
-                                        return;
-                                }
-
-                                pdqLoop(array, begin, pivotPos, Branchless, badAllowed);
-                                begin = pivotPos + 1;
-                                leftmost = false;
-                            }
-                        }
-
-                        void siftDown(int[] array, int root, int dist, int start, bool isMax)
-                        {
-                            int compareVal = 0;
-
-                            if (isMax) compareVal = -1;
-                            else compareVal = 1;
-
-                            while (root <= dist / 2)
-                            {
-                                int leaf = 2 * root;
-                                if (leaf < dist && compare(array[start + leaf - 1], array[start + leaf]) == compareVal)
-                                {
-                                    leaf++;
-                                }
-                                if (compare(array[start + root - 1], array[start + leaf - 1]) == compareVal)
-                                {
-                                    Swap(array, start + root - 1, start + leaf - 1);
-                                    root = leaf;
-                                }
-                                else break;
-                            }
-                        }
-
-                        PDQPair pdqPartRight(int[] array, int begin, int end)
-                        {
-                            int pivot = array[begin];
-                            int first = begin;
-                            int last = end;
-
-                            while (compare(array[++first], pivot) < 0)
-                            {
-
-                            }
-
-                            if (first - 1 == begin)
-                                while (first < last && !(compare(array[--last], pivot) < 0))
-                                {
-
-                                }
-                            else
-                                while (!(compare(array[--last], pivot) < 0))
-                                {
-
-                                }
-
-                            bool alreadyParted = first >= last;
-
-                            while (first < last)
-                            {
-                                Swap(array, first, last);
-                                while (compare(array[++first], pivot) < 0)
-                                {
-
-                                }
-                                while (!(compare(array[--last], pivot) < 0))
-                                {
-
-                                }
-                            }
-
-
-                            int pivotPos = first - 1;
-                            Write(array, begin, array[pivotPos]);
-                            Write(array, pivotPos, pivot);
-
-                            return new PDQPair(pivotPos, alreadyParted);
-                        }
-
-                        bool pdqPartialInsertSort(int[] array, int begin, int end)
-                        {
-                            if (begin == end) return true;
-
-                            int limit = 0;
-                            for (int cur = begin + 1; cur != end; ++cur)
-                            {
-                                if (limit > 8) return false;
-
-                                int sift = cur;
-                                int siftMinusOne = cur - 1;
-
-                                if (compare(array[sift], array[siftMinusOne]) < 0)
-                                {
-                                    int tmp = array[sift];
-
-                                    do
-                                    {
-                                        Write(array, sift--, array[siftMinusOne]);
-                                    } while (sift != begin && compare(tmp, array[--siftMinusOne]) < 0);
-
-                                    Write(array, sift, tmp);
-                                    limit += cur - sift;
-                                }
-                            }
-                            return true;
-                        }
-
-                        int pdqPartLeft(int[] array, int begin, int end)
-                        {
-                            int pivot = array[begin];
-                            int first = begin;
-                            int last = end;
-
-                            while (compare(pivot, array[--last]) < 0)
-                            {
-
-                            }
-
-                            if (last + 1 == end)
-                                while (first < last && !(compare(pivot, array[++first]) < 0))
-                                {
-
-                                }
-                            else
-                                while (!(compare(pivot, array[++first]) < 0))
-                                {
-
-                                }
-
-                            while (first < last)
-                            {
-                                Swap(array, first, last);
-                                while (compare(pivot, array[--last]) < 0)
-                                {
-
-                                }
-                                while (!(compare(pivot, array[++first]) < 0))
-                                {
-
-                                }
-                            }
-
-
-                            int pivotPos = last;
-                            Write(array, begin, array[pivotPos]);
-                            Write(array, pivotPos, pivot);
-
-                            return pivotPos;
-                        }
-
-                        void pdqSortThree(int[] array, int a, int b, int c)
-                        {
-                            pdqSortTwo(array, a, b);
-                            pdqSortTwo(array, b, c);
-                            pdqSortTwo(array, a, b);
-                        }
-
-                        void pdqSortTwo(int[] array, int a, int b)
-                        {
-                            if (compare(array[b], array[a]) < 0)
-                            {
-                                Swap(array, a, b);
-                            }
-                        }
-
-                        void pdqInsertSort(int[] array, int begin, int end)
-                        {
-                            if (begin == end) return;
-
-                            for (int cur = begin + 1; cur != end; ++cur)
-                            {
-                                int sift = cur;
-                                int siftMinusOne = cur - 1;
-
-                                if (compare(array[sift], array[siftMinusOne]) < 0)
-                                {
-                                    int tmp = array[sift];
-                                    do
-                                    {
-                                        Write(array, sift--, array[siftMinusOne]);
-                                    } while (sift != begin && compare(tmp, array[--siftMinusOne]) < 0);
-
-                                    Write(array, sift, tmp);
-                                }
-                            }
-                        }
-
-                        void pdqUnguardInsertSort(int[] array, int begin, int end)
-                        {
-                            if (begin == end) return;
-
-                            for (int cur = begin + 1; cur != end; ++cur)
-                            {
-                                int sift = cur;
-                                int siftMinusOne = cur - 1;
-
-                                if (compare(array[sift], array[siftMinusOne]) < 0)
-                                {
-                                    int tmp = array[sift];
-
-                                    do
-                                    {
-                                        Write(array, sift--, array[siftMinusOne]);
-                                    } while (compare(tmp, array[--siftMinusOne]) < 0);
-
-                                    Write(array, sift, tmp);
-                                }
-                            }
-                        }
-                        AddHistorySnap();
+                        
                         break;
                     case 40: //grailsort adversary
                         if (arr.Length <= 16) Array.Reverse(arr, 0, arr.Length - 1);
@@ -1624,7 +1272,6 @@ namespace AlgoUWP
                         while (d <= end)
                         {
                             int i = 0, dec = 0;
-                            double sleep = 1d / d;
 
                             while (i < nq)
                             {
@@ -1728,7 +1375,7 @@ namespace AlgoUWP
                     case 43: //block random
                         int cl = arr.Length;
                         int blockSize = pow2lte((int)Math.Sqrt(cl));
-                        cl -= cl % blockSize;
+                        _ = cl % blockSize;
                         for (int i = 0; i < arr.Length; i += blockSize)
                         {
                             int randomIndex = random.Next((arr.Length - i) / blockSize) * blockSize + i;
@@ -1825,7 +1472,11 @@ namespace AlgoUWP
             swaps = 0;
             writes = 0;
             reversals = 0;
-            
+            CompsText.Text = "Comparisons: 0";
+            SwapsText.Text = "Swaps: 0";
+            WritesText.Text = "Writes: 0";
+            ReversalsText.Text = "Reversals: 0";
+
             selectedHistory = new List<int[]>();
             sortHistory = new List<int[]>();
             ResetPauseButtonText();
@@ -1879,6 +1530,10 @@ namespace AlgoUWP
                     break;
                 case 11:
                     InsertionWhat(arr);
+                    DrawHistory();
+                    break;
+                case 12:
+                    GrailCommonSort(arr, 0, arr.Length, null, 0, 0);
                     DrawHistory();
                     break;
                 default:
@@ -2025,13 +1680,20 @@ namespace AlgoUWP
             timer.Start();
         }
 
-        public void Swap(int[] arr, int i, int j)
+        private void UpdateSwap()
         {
-            int temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
             swaps++;
+            writes += 2;
             SwapsText.Text = "Swaps: " + swaps;
+            WritesText.Text = "Writes: " + writes;
+        }
+        public void Swap(int[] array, int a, int b)
+        {
+
+            int temp = array[a];
+            array[a] = array[b];
+            array[b] = temp;
+            UpdateSwap();
         }
 
         public void Write(int[] array, int at, int equals)
@@ -2048,6 +1710,28 @@ namespace AlgoUWP
             if (left > right) return 1;
             else if (left < right) return -1;
             else return 0;
+        }
+
+        // Taken from https://en.wikipedia.org/wiki/Gnome_sort
+        private void SmartGnomeSort(int[] array, int lowerBound, int upperBound)
+        {
+            int pos = upperBound;
+
+            while (pos > lowerBound && CompareValues(array[pos - 1], array[pos]) == 1)
+            {
+                Swap(array, pos - 1, pos);
+                pos--;
+                selectedArr = new int[] { pos };
+                AddHistorySnap();
+            }
+        }
+
+        public void GnomeCustomSort(int[] array, int low, int high)
+        {
+            for (int i = low + 1; i < high; i++)
+            {
+                SmartGnomeSort(array, low, i);
+            }
         }
 
         public int[] MergeSort(int startI, int endI)
@@ -2497,7 +2181,7 @@ namespace AlgoUWP
                     while (j > 0 && MyArray[j] < MyArray[j - 1])
                     {
                         // Swap MyArray[j] and MyArray[j-1] 
-                        SwapValues(i, j - 1);
+                        Swap(arr, i, j - 1);
                         selectedArr = new int[] { i, j };
                         AddHistorySnap();
 
@@ -2523,6 +2207,904 @@ namespace AlgoUWP
 
 
 
+
+
+
+
+
+        //Grailsort-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+        private readonly int grailStaticBufferLen = 32; //Buffer length changed due to less numbers in this program being sorted than what Mr. Astrelin used for testing.
+        public int GetStaticBuffer()
+        {
+            return grailStaticBufferLen;
+        }
+
+        private void GrailSwap(int[] arr, int a, int b)
+        {
+            Swap(arr, a, b);
+        }
+
+        private void GrailMultiSwap(int[] arr, int a, int b, int swapsLeft)
+        {
+            while (swapsLeft != 0)
+            {
+                GrailSwap(arr, a++, b++);
+                swapsLeft--;
+                AddHistorySnap();
+            }
+        }
+
+        private void GrailRotate(int[] array, int pos, int lenA, int lenB)
+        {
+            while (lenA != 0 && lenB != 0)
+            {
+                if (lenA <= lenB)
+                {
+                    GrailMultiSwap(array, pos, pos + lenA, lenA);
+                    pos += lenA;
+                    lenB -= lenA;
+                }
+                else
+                {
+                    GrailMultiSwap(array, pos + (lenA - lenB), pos + lenA, lenB);
+                    lenA -= lenB;
+                }
+                selectedArr = new int[] { lenA, lenB, pos };
+                AddHistorySnap();
+            }
+        }
+
+        private void GrailInsertSort(int[] arr, int pos, int len)
+        {
+            GnomeCustomSort(arr, pos, pos + len);
+        }
+
+        //boolean argument determines direction
+        private int GrailBinSearch(int[] arr, int pos, int len, int keyPos, bool isLeft)
+        {
+            int left = -1, right = len;
+            while (left < right - 1)
+            {
+                int mid = left + ((right - left) >> 1);
+                if (isLeft)
+                {
+                    if (CompareValues(arr[pos + mid], arr[keyPos]) >= 0)
+                    {
+                        right = mid;
+                    }
+                    else
+                    {
+                        left = mid;
+                    }
+                }
+                else
+                {
+                    if (CompareValues(arr[pos + mid], arr[keyPos]) > 0)
+                    {
+                        right = mid;
+                    }
+                    else left = mid;
+                }
+            }
+            selectedArr = new int[] { left, right, pos };
+            AddHistorySnap();
+            return right;
+        }
+
+        // cost: 2 * len + numKeys^2 / 2
+        private int GrailFindKeys(int[] arr, int pos, int len, int numKeys)
+        {
+            int dist = 1, foundKeys = 1, firstKey = 0;  // first key is always here
+
+            while (dist < len && foundKeys < numKeys)
+            {
+
+                //Binary Search left
+                int loc = GrailBinSearch(arr, pos + firstKey, foundKeys, pos + dist, true);
+                if (loc == foundKeys || CompareValues(arr[pos + dist], arr[pos + (firstKey + loc)]) != 0)
+                {
+                    GrailRotate(arr, pos + firstKey, foundKeys, dist - (firstKey + foundKeys));
+                    firstKey = dist - foundKeys;
+                    GrailRotate(arr, pos + (firstKey + loc), foundKeys - loc, 1);
+                    foundKeys++;
+                }
+                else
+                {
+                }
+
+                dist++;
+                selectedArr = new int[] { dist, len, pos };
+                AddHistorySnap();
+            }
+            GrailRotate(arr, pos, firstKey, foundKeys);
+
+            return foundKeys;
+        }
+
+        // cost: min(len1, len2)^2 + max(len1, len2)
+        public void GrailMergeWithoutBuffer(int[] arr, int pos, int len1, int len2)
+        {
+            if (len1 < len2)
+            {
+                while (len1 != 0)
+                {
+                    //Binary Search left
+                    int loc = GrailBinSearch(arr, pos + len1, len2, pos, true);
+                    if (loc != 0)
+                    {
+                        GrailRotate(arr, pos, len1, loc);
+                        pos += loc;
+                        len2 -= loc;
+                    }
+                    if (len2 == 0) break;
+                    do
+                    {
+                        pos++;
+                        len1--;
+                        selectedArr = new int[] { pos, len1, len2 };
+                        AddHistorySnap();
+                    } while (len1 != 0 && CompareValues(arr[pos], arr[pos + len1]) <= 0);
+                }
+            }
+            else
+            {
+                while (len2 != 0)
+                {
+                    //Binary Search right
+                    int loc = GrailBinSearch(arr, pos, len1, pos + (len1 + len2 - 1), false);
+                    if (loc != len1)
+                    {
+                        GrailRotate(arr, pos + loc, len1 - loc, len2);
+                        len1 = loc;
+                    }
+                    if (len1 == 0) break;
+                    do
+                    {
+                        len2--;
+                        selectedArr = new int[] { pos, len1, len2 };
+                        AddHistorySnap();
+                    } while (len2 != 0 && CompareValues(arr[pos + len1 - 1], arr[pos + len1 + len2 - 1]) <= 0);
+                }
+            }
+        }
+
+        // arr - starting array. arr[0 - regBlockLen..-1] - buffer (if havebuf).
+        // regBlockLen - length of regular blocks. First blockCount blocks are stable sorted by 1st elements and key-coded
+        // keysPos - arrays of keys, in same order as blocks. keysPos < midkey means stream A
+        // aBlockCount are regular blocks from stream A.
+        // lastLen is length of last (irregular) block from stream B, that should go before nblock2 blocks.
+        // lastLen = 0 requires aBlockCount = 0 (no irregular blocks). lastLen > 0, aBlockCount = 0 is possible.
+        private void GrailMergeBuffersLeft(int[] arr, int keysPos, int midkey, int pos,
+                int blockCount, int blockLen, bool havebuf, int aBlockCount,
+                int lastLen)
+        {
+
+            if (blockCount == 0)
+            {
+                int aBlocksLen = aBlockCount * blockLen;
+                if (havebuf) GrailMergeLeft(arr, pos, aBlocksLen, lastLen, 0 - blockLen);
+                else GrailMergeWithoutBuffer(arr, pos, aBlocksLen, lastLen);
+                return;
+            }
+
+            int leftOverLen = blockLen;
+            int leftOverFrag = CompareValues(arr[keysPos], arr[midkey]) < 0 ? 0 : 1;
+            int processIndex = blockLen;
+            int restToProcess;
+
+            for (int keyIndex = 1; keyIndex < blockCount; keyIndex++, processIndex += blockLen)
+            {
+                restToProcess = processIndex - leftOverLen;
+                int nextFrag = CompareValues(arr[keysPos + keyIndex], arr[midkey]) < 0 ? 0 : 1;
+
+                if (nextFrag == leftOverFrag)
+                {
+                    if (havebuf) GrailMultiSwap(arr, pos + restToProcess - blockLen, pos + restToProcess, leftOverLen);
+                    leftOverLen = blockLen;
+                }
+                else
+                {
+                    if (havebuf)
+                    {
+                        GrailPair results = GrailSmartMergeWithBuffer(arr, pos + restToProcess, leftOverLen, leftOverFrag, blockLen);
+                        leftOverLen = results.GetLeftOverLen();
+                        leftOverFrag = results.GetLeftOverFrag();
+                    }
+                    else
+                    {
+                        GrailPair results = GrailSmartMergeWithoutBuffer(arr, pos + restToProcess, leftOverLen, leftOverFrag, blockLen);
+                        leftOverLen = results.GetLeftOverLen();
+                        leftOverFrag = results.GetLeftOverFrag();
+                    }
+                }
+                selectedArr = new int[] { keyIndex, processIndex };
+                AddHistorySnap();
+            }
+            restToProcess = processIndex - leftOverLen;
+
+            if (lastLen != 0)
+            {
+                if (leftOverFrag != 0)
+                {
+                    if (havebuf)
+                    {
+                        GrailMultiSwap(arr, pos + restToProcess - blockLen, pos + restToProcess, leftOverLen);
+                    }
+                    restToProcess = processIndex;
+                    leftOverLen = blockLen * aBlockCount;
+                }
+                else
+                {
+                    leftOverLen += blockLen * aBlockCount;
+                }
+                if (havebuf)
+                {
+                    GrailMergeLeft(arr, pos + restToProcess, leftOverLen, lastLen, -blockLen);
+                }
+                else
+                {
+                    GrailMergeWithoutBuffer(arr, pos + restToProcess, leftOverLen, lastLen);
+                }
+            }
+            else
+            {
+                if (havebuf)
+                {
+                    GrailMultiSwap(arr, pos + restToProcess, pos + (restToProcess - blockLen), leftOverLen);
+                }
+            }
+        }
+
+        // arr[dist..-1] - buffer, arr[0, leftLen - 1] ++ arr[leftLen, leftLen + rightLen - 1]
+        // -> arr[dist, dist + leftLen + rightLen - 1]
+        private void GrailMergeLeft(int[] arr, int pos, int leftLen, int rightLen, int dist)
+        {
+            int left = 0;
+            int right = leftLen;
+
+            rightLen += leftLen;
+
+            while (right < rightLen)
+            {
+                if (left == leftLen || CompareValues(arr[pos + left], arr[pos + right]) > 0)
+                {
+                    GrailSwap(arr, pos + (dist++), pos + (right++));
+                }
+                else GrailSwap(arr, pos + (dist++), pos + (left++));
+                AddHistorySnap();
+            }
+
+            if (dist != left) GrailMultiSwap(arr, pos + dist, pos + left, leftLen - left);
+        }
+        private void GrailMergeRight(int[] arr, int pos, int leftLen, int rightLen, int dist)
+        {
+            int mergedPos = leftLen + rightLen + dist - 1;
+            int right = leftLen + rightLen - 1;
+            int left = leftLen - 1;
+
+            while (left >= 0)
+            {
+                if (right < leftLen || CompareValues(arr[pos + left], arr[pos + right]) > 0)
+                {
+                    GrailSwap(arr, pos + (mergedPos--), pos + (left--));
+                }
+                else GrailSwap(arr, pos + (mergedPos--), pos + (right--));
+                selectedArr = new int[] { pos, dist };
+                AddHistorySnap();
+            }
+
+            if (right != mergedPos)
+            {
+                while (right >= leftLen) GrailSwap(arr, pos + (mergedPos--), pos + (right--));
+            }
+        }
+
+        //returns the leftover length, then the leftover fragment
+        private GrailPair GrailSmartMergeWithoutBuffer(int[] arr, int pos, int leftOverLen, int leftOverFrag, int regBlockLen)
+        {
+            if (regBlockLen == 0) return new GrailPair(leftOverLen, leftOverFrag);
+
+            int len1 = leftOverLen;
+            int len2 = regBlockLen;
+            int typeFrag = 1 - leftOverFrag; //1 if inverted
+
+            if (len1 != 0 && CompareValues(arr[pos + (len1 - 1)], arr[pos + len1]) - typeFrag >= 0)
+            {
+
+                while (len1 != 0)
+                {
+                    int foundLen;
+                    if (typeFrag != 0)
+                    {
+                        //Binary Search left
+                        foundLen = GrailBinSearch(arr, pos + len1, len2, pos, true);
+                    }
+                    else
+                    {
+                        //Binary Search right
+                        foundLen = GrailBinSearch(arr, pos + len1, len2, pos, false);
+                    }
+                    if (foundLen != 0)
+                    {
+                        GrailRotate(arr, pos, len1, foundLen);
+                        pos += foundLen;
+                        len2 -= foundLen;
+                    }
+                    if (len2 == 0)
+                    {
+                        return new GrailPair(len1, leftOverFrag);
+                    }
+                    do
+                    {
+                        pos++;
+                        len1--;
+                        selectedArr = new int[] { pos, len1, len2 };
+                        AddHistorySnap();
+                    } while (len1 != 0 && CompareValues(arr[pos], arr[pos + len1]) - typeFrag < 0);
+                }
+            }
+            return new GrailPair(len2, typeFrag);
+        }
+
+        //returns the leftover length, then the leftover fragment
+        private GrailPair GrailSmartMergeWithBuffer(int[] arr, int pos, int leftOverLen, int leftOverFrag, int blockLen)
+        {
+            int dist = 0 - blockLen, left = 0, right = leftOverLen, leftEnd = right, rightEnd = right + blockLen;
+            int typeFrag = 1 - leftOverFrag;  // 1 if inverted
+
+            while (left < leftEnd && right < rightEnd)
+            {
+                if (CompareValues(arr[pos + left], arr[pos + right]) - typeFrag < 0)
+                {
+                    GrailSwap(arr, pos + (dist++), pos + (left++));
+                }
+                else GrailSwap(arr, pos + (dist++), pos + (right++));
+                selectedArr = new int[] { pos};
+                AddHistorySnap();
+            }
+
+            int length, fragment = leftOverFrag;
+            if (left < leftEnd)
+            {
+                length = leftEnd - left;
+                while (left < leftEnd)
+                {
+                    GrailSwap(arr, pos + (--leftEnd), pos + (--rightEnd));
+                    selectedArr = new int[] { pos };
+                }
+            }
+            else
+            {
+                length = rightEnd - right;
+                fragment = typeFrag;
+            }
+            return new GrailPair(length, fragment);
+        }
+
+
+        /***** Sort With Extra Buffer *****/
+
+        //returns the leftover length, then the leftover fragment
+        private GrailPair GrailSmartMergeWithXBuf(int[] arr, int pos, int leftOverLen, int leftOverFrag, int blockLen)
+        {
+            int dist = 0 - blockLen, left = 0, right = leftOverLen, leftEnd = right, rightEnd = right + blockLen;
+            int typeFrag = 1 - leftOverFrag;  // 1 if inverted
+
+            while (left < leftEnd && right < rightEnd)
+            {
+                if (CompareValues(arr[pos + left], arr[pos + right]) - typeFrag < 0)
+                {
+                    Write(arr, pos + dist++, arr[pos + left++]);
+                }
+                else Write(arr, pos + dist++, arr[pos + right++]);
+                selectedArr = new int[] { pos };
+                AddHistorySnap();
+            }
+
+            int length, fragment = leftOverFrag;
+            if (left < leftEnd)
+            {
+                length = leftEnd - left;
+                while (left < leftEnd)
+                {
+                    Write(arr, pos + --rightEnd, arr[pos + --leftEnd]);
+                    AddHistorySnap();
+                }
+            }
+            else
+            {
+                length = rightEnd - right;
+                fragment = typeFrag;
+            }
+            return new GrailPair(length, fragment);
+        }
+
+        // arr[dist..-1] - free, arr[0, leftEnd - 1] ++ arr[leftEnd, leftEnd + rightEnd - 1]
+        // -> arr[dist, dist + leftEnd + rightEnd - 1]
+        private void GrailMergeLeftWithXBuf(int[] arr, int pos, int leftEnd, int rightEnd, int dist)
+        {
+            int left = 0;
+            int right = leftEnd;
+            rightEnd += leftEnd;
+
+
+            while (right < rightEnd)
+            {
+                if (left == leftEnd || CompareValues(arr[pos + left], arr[pos + right]) > 0)
+                {
+                    Write(arr, pos + dist++, arr[pos + right++]);
+                }
+                else Write(arr, pos + dist++, arr[pos + left++]);
+                selectedArr = new int[] { pos, leftEnd, rightEnd, dist };
+                AddHistorySnap();
+            }
+
+            if (dist != left)
+            {
+                while (left < leftEnd)
+                {
+                    Write(arr, pos + dist++, arr[pos + left++]);
+                    selectedArr = new int[] { pos, leftEnd, rightEnd, dist };
+                    AddHistorySnap();
+                }
+
+            }
+        }
+
+        // arr - starting array. arr[0 - regBlockLen..-1] - buffer (if havebuf).
+        // regBlockLen - length of regular blocks. First blockCount blocks are stable sorted by 1st elements and key-coded
+        // keysPos - where keys are in array, in same order as blocks. keysPos < midkey means stream A
+        // aBlockCount are regular blocks from stream A.
+        // lastLen is length of last (irregular) block from stream B, that should go before aCountBlock blocks.
+        // lastLen = 0 requires aBlockCount = 0 (no irregular blocks). lastLen > 0, aBlockCount = 0 is possible.
+        private void GrailMergeBuffersLeftWithXBuf(int[] arr, int keysPos, int midkey, int pos,
+                int blockCount, int regBlockLen, int aBlockCount, int lastLen)
+        {
+
+            if (blockCount == 0)
+            {
+                int aBlocksLen = aBlockCount * regBlockLen;
+                GrailMergeLeftWithXBuf(arr, pos, aBlocksLen, lastLen, 0 - regBlockLen);
+                return;
+            }
+
+            int leftOverLen = regBlockLen;
+            int leftOverFrag = CompareValues(arr[keysPos], arr[midkey]) < 0 ? 0 : 1;
+            int processIndex = regBlockLen;
+
+            int restToProcess;
+            for (int keyIndex = 1; keyIndex < blockCount; keyIndex++, processIndex += regBlockLen)
+            {
+                restToProcess = processIndex - leftOverLen;
+                int nextFrag = CompareValues(arr[keysPos + keyIndex], arr[midkey]) < 0 ? 0 : 1;
+
+                if (nextFrag == leftOverFrag)
+                {
+                    Array.Copy(arr, pos + restToProcess, arr, pos + restToProcess - regBlockLen, leftOverLen);
+                    leftOverLen = regBlockLen;
+                }
+                else
+                {
+                    GrailPair results = GrailSmartMergeWithXBuf(arr, pos + restToProcess, leftOverLen, leftOverFrag, regBlockLen);
+                    leftOverLen = results.GetLeftOverLen();
+                    leftOverFrag = results.GetLeftOverFrag();
+                }
+                selectedArr = new int[] { keyIndex, processIndex, pos, keysPos };
+                AddHistorySnap();
+            }
+            restToProcess = processIndex - leftOverLen;
+
+            if (lastLen != 0)
+            {
+                if (leftOverFrag != 0)
+                {
+                    Array.Copy(arr, pos + restToProcess, arr, pos + restToProcess - regBlockLen, leftOverLen);
+
+                    restToProcess = processIndex;
+                    leftOverLen = regBlockLen * aBlockCount;
+                }
+                else
+                {
+                    leftOverLen += regBlockLen * aBlockCount;
+                }
+                GrailMergeLeftWithXBuf(arr, pos + restToProcess, leftOverLen, lastLen, 0 - regBlockLen);
+            }
+            else
+            {
+                Array.Copy(arr, pos + restToProcess, arr, pos + restToProcess - regBlockLen, leftOverLen);
+            }
+        }
+
+        /***** End Sort With Extra Buffer *****/
+
+        // build blocks of length buildLen
+        // input: [-buildLen, -1] elements are buffer
+        // output: first buildLen elements are buffer, blocks 2 * buildLen and last subblock sorted
+        private void GrailBuildBlocks(int[] arr, int pos, int len, int buildLen,
+                int[] extbuf, int bufferPos, int extBufLen)
+        {
+
+            int buildBuf = buildLen < extBufLen ? buildLen : extBufLen;
+            while ((buildBuf & (buildBuf - 1)) != 0)
+            {
+                buildBuf &= buildBuf - 1;  // max power or 2 - just in case
+                selectedArr = new int[] { pos, bufferPos };
+                AddHistorySnap();
+            }
+
+            int extraDist, part;
+            if (buildBuf != 0)
+            {
+                Array.Copy(arr, pos - buildBuf, extbuf, bufferPos, buildBuf);
+
+                for (int dist = 1; dist < len; dist += 2)
+                {
+                    extraDist = 0;
+                    if (CompareValues(arr[pos + (dist - 1)], arr[pos + dist]) > 0) extraDist = 1;
+                    Write(arr, pos + dist - 3, arr[pos + dist - 1 + extraDist]);
+                    Write(arr, pos + dist - 2, arr[pos + dist - extraDist]);
+                    selectedArr = new int[] { dist, pos, bufferPos };
+                    AddHistorySnap();
+                }
+                if (len % 2 != 0) Write(arr, pos + len - 3, arr[pos + len - 1]);
+                pos -= 2;
+
+                for (part = 2; part < buildBuf; part *= 2)
+                {
+                    int left = 0;
+                    int right = len - 2 * part;
+                    while (left <= right)
+                    {
+                        GrailMergeLeftWithXBuf(arr, pos + left, part, part, 0 - part);
+                        left += 2 * part;
+                    }
+                    int rest = len - left;
+
+                    if (rest > part)
+                    {
+                        GrailMergeLeftWithXBuf(arr, pos + left, part, rest - part, 0 - part);
+                    }
+                    else
+                    {
+                        for (; left < len; left++) Write(arr, pos + left - part, arr[pos + left]);
+                    }
+                    pos -= part;
+                    selectedArr = new int[] { part, pos, bufferPos };
+                    AddHistorySnap();
+                }
+                Array.Copy(extbuf, bufferPos, arr, pos + len, buildBuf);
+            }
+            else
+            {
+                for (int dist = 1; dist < len; dist += 2)
+                {
+                    extraDist = 0;
+                    if (CompareValues(arr[pos + (dist - 1)], arr[pos + dist]) > 0) extraDist = 1;
+                    GrailSwap(arr, pos + (dist - 3), pos + (dist - 1 + extraDist));
+                    GrailSwap(arr, pos + (dist - 2), pos + (dist - extraDist));
+                    selectedArr = new int[] { dist, pos, bufferPos };
+                    AddHistorySnap();
+                }
+                if (len % 2 != 0) GrailSwap(arr, pos + (len - 1), pos + (len - 3));
+                pos -= 2;
+                part = 2;
+            }
+
+            for (; part < buildLen; part *= 2)
+            {
+                int left = 0;
+                int right = len - 2 * part;
+                while (left <= right)
+                {
+                    GrailMergeLeft(arr, pos + left, part, part, 0 - part);
+                    left += 2 * part;
+                }
+                int rest = len - left;
+                if (rest > part)
+                {
+                    GrailMergeLeft(arr, pos + left, part, rest - part, 0 - part);
+                }
+                else
+                {
+                    GrailRotate(arr, pos + left - part, part, rest);
+                }
+                pos -= part;
+                selectedArr = new int[] { part, pos };
+                AddHistorySnap();
+            }
+            int restToBuild = len % (2 * buildLen);
+            int leftOverPos = len - restToBuild;
+
+            if (restToBuild <= buildLen) GrailRotate(arr, pos + leftOverPos, restToBuild, buildLen);
+            else GrailMergeRight(arr, pos + leftOverPos, buildLen, restToBuild - buildLen, buildLen);
+
+            while (leftOverPos > 0)
+            {
+                leftOverPos -= 2 * buildLen;
+                GrailMergeRight(arr, pos + leftOverPos, buildLen, buildLen, buildLen);
+                selectedArr = new int[] { pos, bufferPos };
+                AddHistorySnap();
+            }
+        }
+
+        // keys are on the left of arr. Blocks of length buildLen combined. We'll combine them in pairs
+        // buildLen and nkeys are powers of 2. (2 * buildLen / regBlockLen) keys are guaranteed
+        private void GrailCombineBlocks(int[] arr, int keyPos, int pos, int len, int buildLen,
+                int regBlockLen, bool havebuf, int[] buffer, int bufferPos)
+        {
+
+            int combineLen = len / (2 * buildLen);
+            int leftOver = len % (2 * buildLen);
+            if (leftOver <= buildLen)
+            {
+                len -= leftOver;
+                leftOver = 0;
+            }
+
+            if (buffer != null) Array.Copy(arr, pos - regBlockLen, buffer, bufferPos, regBlockLen);
+
+            for (int i = 0; i <= combineLen; i++)
+            {
+                if (i == combineLen && leftOver == 0) break;
+
+                int blockPos = pos + i * 2 * buildLen;
+                int blockCount = (i == combineLen ? leftOver : 2 * buildLen) / regBlockLen;
+
+                GrailInsertSort(arr, keyPos, blockCount + (i == combineLen ? 1 : 0));
+
+                int midkey = buildLen / regBlockLen;
+
+                for (int index = 1; index < blockCount; index++)
+                {
+                    int leftIndex = index - 1;
+
+                    for (int rightIndex = index; rightIndex < blockCount; rightIndex++)
+                    {
+                        int rightComp = CompareValues(arr[blockPos + leftIndex * regBlockLen],
+                                                            arr[blockPos + rightIndex * regBlockLen]);
+                        if (rightComp > 0 || (rightComp == 0 && CompareValues(arr[keyPos + leftIndex], arr[keyPos + rightIndex]) > 0))
+                        {
+                            leftIndex = rightIndex;
+                        }
+                    }
+                    if (leftIndex != index - 1)
+                    {
+                        GrailMultiSwap(arr, blockPos + (index - 1) * regBlockLen, blockPos + leftIndex * regBlockLen, regBlockLen);
+                        GrailSwap(arr, keyPos + (index - 1), keyPos + leftIndex);
+                        if (midkey == index - 1 || midkey == leftIndex)
+                        {
+                            midkey ^= (index - 1) ^ leftIndex;
+                        }
+                    }
+                    selectedArr = new int[] { index, pos };
+                    AddHistorySnap();
+                }
+
+                int aBlockCount = 0;
+                int lastLen = 0;
+                if (i == combineLen) lastLen = leftOver % regBlockLen;
+
+                if (lastLen != 0)
+                {
+                    while (aBlockCount < blockCount && CompareValues(arr[blockPos + blockCount * regBlockLen],
+                                                                          arr[blockPos + (blockCount - aBlockCount - 1) * regBlockLen]) < 0)
+                    {
+                        aBlockCount++;
+                        selectedArr = new int[] { pos, bufferPos };
+                        AddHistorySnap();
+                    }
+                }
+
+                if (buffer != null)
+                {
+                    GrailMergeBuffersLeftWithXBuf(arr, keyPos, keyPos + midkey, blockPos,
+                            blockCount - aBlockCount, regBlockLen, aBlockCount, lastLen);
+                }
+                else GrailMergeBuffersLeft(arr, keyPos, keyPos + midkey, blockPos,
+                        blockCount - aBlockCount, regBlockLen, havebuf, aBlockCount, lastLen);
+                selectedArr = new int[] { i };
+                AddHistorySnap();
+            }
+            if (buffer != null)
+            {
+                for (int i = len; --i >= 0;) Write(arr, pos + i, arr[pos + i - regBlockLen]);
+                Array.Copy(buffer, bufferPos, arr, pos - regBlockLen, regBlockLen);
+            }
+            else if (havebuf)
+            {
+                while (--len >= 0)
+                {
+                    GrailSwap(arr, pos + len, pos + len - regBlockLen);
+                    selectedArr = new int[] { pos, bufferPos };
+                    AddHistorySnap();
+                }
+            }
+        }
+
+        public void GrailLazyStableSort(int[] arr, int pos, int len)
+        {
+            for (int dist = 1; dist < len; dist += 2)
+            {
+                if (CompareValues(arr[pos + dist - 1], arr[pos + dist]) > 0)
+                {
+                    GrailSwap(arr, pos + (dist - 1), pos + dist);
+                }
+                selectedArr = new int[] { dist, pos };
+                AddHistorySnap();
+            }
+
+            for (int part = 2; part < len; part *= 2)
+            {
+                int left = 0;
+                int right = len - 2 * part;
+
+                while (left <= right)
+                {
+                    GrailMergeWithoutBuffer(arr, pos + left, part, part);
+                    left += 2 * part;
+                    selectedArr = new int[] { pos };
+                    AddHistorySnap();
+                }
+
+                int rest = len - left;
+                if (rest > part)
+                {
+                    GrailMergeWithoutBuffer(arr, pos + left, part, rest - part);
+                }
+                selectedArr = new int[] { part, pos };
+                AddHistorySnap();
+            }
+        }
+
+        public void GrailCommonSort(int[] arr, int pos, int len, int[] buffer, int bufferPos, int bufferLen)
+        {
+
+            if (len <= 16)
+            {
+                GrailInsertSort(arr, pos, len);
+                return;
+            }
+
+            int blockLen = 1;
+            while (blockLen * blockLen < len) blockLen *= 2;
+
+            int numKeys = (len - 1) / blockLen + 1;
+
+            int keysFound = GrailFindKeys(arr, pos, len, numKeys + blockLen);
+
+            bool bufferEnabled = true;
+
+            if (keysFound < numKeys + blockLen)
+            {
+                if (keysFound < 4)
+                {
+                    GrailLazyStableSort(arr, pos, len);
+                    return;
+                }
+                numKeys = blockLen;
+                while (numKeys > keysFound) numKeys /= 2;
+                bufferEnabled = false;
+                blockLen = 0;
+            }
+
+            int dist = blockLen + numKeys;
+            int buildLen = bufferEnabled ? blockLen : numKeys;
+
+            if (bufferEnabled)
+            {
+                GrailBuildBlocks(arr, pos + dist, len - dist, buildLen, buffer, bufferPos, bufferLen);
+            }
+            else
+            {
+                GrailBuildBlocks(arr, pos + dist, len - dist, buildLen, null, bufferPos, 0);
+            }
+
+            // 2 * buildLen are built
+            while (len - dist > (buildLen *= 2))
+            {
+                int regBlockLen = blockLen;
+                bool buildBufEnabled = bufferEnabled;
+
+                if (!bufferEnabled)
+                {
+                    if (numKeys > 4 && numKeys / 8 * numKeys >= buildLen)
+                    {
+                        regBlockLen = numKeys / 2;
+                        buildBufEnabled = true;
+                    }
+                    else
+                    {
+                        int calcKeys = 1;
+                        int i = buildLen * keysFound / 2;
+                        while (calcKeys < numKeys && i != 0)
+                        {
+                            calcKeys *= 2;
+                            i /= 8;
+                        }
+                        regBlockLen = (2 * buildLen) / calcKeys;
+                    }
+                }
+                GrailCombineBlocks(arr, pos, pos + dist, len - dist, buildLen, regBlockLen, buildBufEnabled,
+                        buildBufEnabled && regBlockLen <= bufferLen ? buffer : null, bufferPos);
+                selectedArr = new int[] { dist, pos, bufferPos };
+                AddHistorySnap();
+            }
+
+            GrailInsertSort(arr, pos, dist);
+            GrailMergeWithoutBuffer(arr, pos, dist, len - dist);
+        }
+
+        private void GrailInPlaceMerge(int[] arr, int pos, int len1, int len2)
+        {
+            if (len1 < 3 || len2 < 3)
+            {
+                GrailMergeWithoutBuffer(arr, pos, len1, len2);
+                return;
+            }
+
+            int midpoint;
+            if (len1 < len2) midpoint = len1 + len2 / 2;
+            else midpoint = len1 / 2;
+
+            //Left binary search
+            int len1Left, len1Right;
+            len1Left = len1Right = GrailBinSearch(arr, pos, len1, pos + midpoint, true);
+
+            //Right binary search
+            if (len1Right < len1 && CompareValues(arr[pos + len1Right], arr[pos + midpoint]) == 0)
+            {
+                len1Right = GrailBinSearch(arr, pos + len1Left, len1 - len1Left, pos + midpoint, false) + len1Left;
+            }
+
+            int len2Left, len2Right;
+            len2Left = len2Right = GrailBinSearch(arr, pos + len1, len2, pos + midpoint, true);
+
+            if (len2Right < len2 && CompareValues(arr[pos + len1 + len2Right], arr[pos + midpoint]) == 0)
+            {
+                len2Right = GrailBinSearch(arr, pos + len1 + len2Left, len2 - len2Left, pos + midpoint, false) + len2Left;
+            }
+
+            if (len1Left == len1Right) GrailRotate(arr, pos + len1Right, len1 - len1Right, len2Right);
+            else
+            {
+                GrailRotate(arr, pos + len1Left, len1 - len1Left, len2Left);
+
+                if (len2Right != len2Left)
+                {
+                    GrailRotate(arr, pos + (len1Right + len2Left), len1 - len1Right, len2Right - len2Left);
+                }
+            }
+
+            GrailInPlaceMerge(arr, pos + (len1Right + len2Right), len1 - len1Right, len2 - len2Right);
+            GrailInPlaceMerge(arr, pos, len1Left, len2Left);
+        }
+        public void GrailInPlaceMergeSort(int[] arr, int start, int len)
+        {
+            for (int dist = start + 1; dist < len; dist += 2)
+            {
+                if (CompareValues(arr[dist - 1], arr[dist]) > 0) GrailSwap(arr, dist - 1, dist);
+                selectedArr = new int[] { dist };
+                AddHistorySnap();
+            }
+            for (int part = 2; part < len; part *= 2)
+            {
+                int left = start, right = len - 2 * part;
+
+                while (left <= right)
+                {
+                    GrailInPlaceMerge(arr, left, part, part);
+                    left += 2 * part;
+                    selectedArr = new int[] { part };
+                    AddHistorySnap();
+                }
+
+                int rest = len - left;
+                if (rest > part) GrailInPlaceMerge(arr, left, part, rest - part);
+            }
+        }
 
 
 
