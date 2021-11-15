@@ -15,7 +15,7 @@ Major credit to ArrayV (https://github.com/Gaming32/ArrayV-v4.0) for the shuffle
 - inverted pipe organ
 - PDQsort adversary
 
-# Guide for adding your own algorithms
+# Guide for adding your own algorithms (OUTDATED)
 - Taking odd-even as a reference, add the lines `selectedArr = new int[] { i };` and `AddHistorySnap();` at the bottom of either each or the needed loops. "i" in the first one could be whichever first variable is declared in the loop if it's not a regular "for" loop.
 - Add a new ComboBoxItem at the bottom of the combo box for the algorithms in the XAML, and then go to the code-behind (the .xaml.cs file) and into `Visualize_Click(...)`, and add a new "case" with the number after the above. For example, if your new algorithm is the 6th, then add below the last `break;`:
 ```csharp
