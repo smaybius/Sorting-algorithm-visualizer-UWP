@@ -21,28 +21,62 @@
         <Button x:Name="comboBox" Margin="16,0,0,187" Width="260" Height="45" FontSize="24" VerticalAlignment="Bottom" Content="Merge sort">
             <Button.Flyout>
                 <MenuFlyout>
+                    <MenuFlyoutSubItem Text="Concurrent sorts">
+                    </MenuFlyoutSubItem>
                     <MenuFlyoutSubItem Text="Distributive sorts">
-                        <MenuFlyoutItem Text="LSD radix sort" Click="MenuFlyoutItem_Click"/>
                     </MenuFlyoutSubItem>
                     <MenuFlyoutSubItem Text="Exchange sorts">
-                        <MenuFlyoutItem Text="Left/left quick sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="3-smooth comb (iterative) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="3-smooth comb (parallel) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="3-smooth comb (recursive) sort" Click="MenuFlyoutItem_Click"/>
                         <MenuFlyoutItem Text="Bubble sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Circle (iterative) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Circle (recursive) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Cocktail shaker sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Comb sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Gnome sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Intro sort (Array.Sort on C#)" Click="MenuFlyoutItem_Click"/>
                         <MenuFlyoutItem Text="Odd-even sort" Click="MenuFlyoutItem_Click"/>
-                        <MenuFlyoutItem Text="Move to back sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Optimized stooge sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Optimized stooge (studio) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (dual-pivot) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (left/left) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (left/left middle pivot) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (left/right) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (left/right parallel) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (stable) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (stable middle pivot) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (stable parallel) sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quick (stackless) sort" Click="MenuFlyoutItem_Click"/>
                         <MenuFlyoutItem Text="Weird insertion sort" Click="MenuFlyoutItem_Click"/>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutSubItem Text="Impractical sorts">
+                        <MenuFlyoutItem Text="Bogo sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Bozo sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Cocktail bogo sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Less bogo sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Quad stooge sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Silly sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Slow sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Snuffle sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Stable stooge sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Stooge sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Ternary slow sort" Click="MenuFlyoutItem_Click"/>
                     </MenuFlyoutSubItem>
                     <MenuFlyoutSubItem Text="Insertion sorts">
                         <MenuFlyoutItem Text="Insertion sort" Click="MenuFlyoutItem_Click"/>
                         <MenuFlyoutItem Text="Shell sort" Click="MenuFlyoutItem_Click"/>
                     </MenuFlyoutSubItem>
                     <MenuFlyoutSubItem Text="Merge sorts">
-                        <MenuFlyoutItem Text="Merge sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Binary merge sort" Click="MenuFlyoutItem_Click"/>
                         <MenuFlyoutItem Text="Grail sort" Click="MenuFlyoutItem_Click"/>
                         <MenuFlyoutItem Text="Lazy stable sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Merge sort" Click="MenuFlyoutItem_Click"/>
                     </MenuFlyoutSubItem>
                     <MenuFlyoutSubItem Text="Selection sorts">
-                        <MenuFlyoutItem Text="Selection sort" Click="MenuFlyoutItem_Click"/>
                         <MenuFlyoutItem Text="Max heap sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Min heap sort" Click="MenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Selection sort" Click="MenuFlyoutItem_Click"/>
                     </MenuFlyoutSubItem>
                 </MenuFlyout>
             </Button.Flyout>
@@ -123,13 +157,15 @@
         </ComboBox>
         <Slider x:Name="speedSlider" Height="75" Margin="0,0,7,39" VerticalAlignment="Bottom" Header="Sorting speed:" Maximum="45" Value="25" SmallChange="1" IsDirectionReversed="True" HorizontalAlignment="Right" Width="456" FontSize="24"/>
         <Button x:Name="pauseButton" Content="Pause" Margin="0,0,475,161" Click="PauseButton_Click" Background="#FF686868" Foreground="White" BorderBrush="{x:Null}" FontWeight="Bold" HorizontalAlignment="Right" Width="90" Height="71" VerticalAlignment="Bottom" FontSize="18"/>
-        <muxc:NumberBox x:Name="ArraySize" Margin="301,0,0,58" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="125" Header="Array size:" Value="200" FontSize="24"/>
+        <muxc:NumberBox x:Name="ArraySize" Margin="301,0,0,58" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="125" Header="Array size:" Value="200" FontSize="24" ValueChanged="ArraySize_ValueChanged"/>
+
         <CheckBox Content="Sound" Margin="303,0,0,16" VerticalAlignment="Bottom" FontSize="24"/>
         <Slider HorizontalAlignment="Right" Margin="0,0,520,46" VerticalAlignment="Bottom" Width="166" Header="Sound volume:" Maximum="100" StepFrequency="10" Value="100" FontSize="24"/>
         <TextBlock x:Name="CompsText" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Comparisons:" VerticalAlignment="Top" FontSize="24"/>
         <TextBlock x:Name="SwapsText" HorizontalAlignment="Left" Margin="10,47,0,0" TextWrapping="Wrap" Text="Swaps:" VerticalAlignment="Top" FontSize="24"/>
         <TextBlock x:Name="ReversalsText" HorizontalAlignment="Left" Margin="10,84,0,0" TextWrapping="Wrap" Text="Reversals:" VerticalAlignment="Top" FontSize="24"/>
         <TextBlock x:Name="WritesText" HorizontalAlignment="Left" Margin="10,121,0,0" TextWrapping="Wrap" Text="Writes:" VerticalAlignment="Top" FontSize="24"/>
+        <muxc:NumberBox x:Name="BucketCountBox" Margin="301,0,0,186" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="125" Header="Base:" Value="2" FontSize="24"/>
 
     </Grid>
 </Page>
