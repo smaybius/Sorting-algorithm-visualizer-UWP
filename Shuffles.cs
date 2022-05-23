@@ -58,6 +58,8 @@ namespace AlgoUWP
             BOTTOM_UP_HEAP,
             SMOOTH_HEAP,
             BINOMIAL_SMOOTH_HEAP,
+            LAZY_HEAP,
+            OPTI_LAZY_HEAP,
             POPLAR_HEAP,
             TRIANGULAR_HEAP,
             PSEUDO_HEAP,
